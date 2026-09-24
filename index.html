@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Atlassya</title>
+<link rel="stylesheet" href="css/style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/PointerLockControls.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+</head>
+<body>
+<div id="blocker"><div id="instructions"><p id="clickText">OYNAMAK İÇİN TIKLA</p><p class="hint">Hareket: W A S D &nbsp;|&nbsp; Zıplama: BOŞLUK &nbsp;|&nbsp; Eğilme: SHIFT <br><br> Menü: ESC &nbsp;|&nbsp; Etkileşim: Tıkla</p></div></div>
+<div id="crosshair"></div>
+<div id="interactText"></div>
+<div id="vignette"></div>
+<div id="screenMessage"></div>
+<div id="gameCanvas"></div>
+<div id="escMenuUI" class="ui-modal"><div class="settings-content" style="text-align:center;background:transparent;border:none;box-shadow:none;"><h2 style="font-size:40px;text-shadow:4px 4px 0 #000;">DURAKLATILDI</h2><div class="menu-grid" style="flex-direction:column;align-items:center;"><button class="menu-btn" onclick="openModal('settingsUI')">AYARLAR</button><button class="menu-btn" onclick="openModal('filtersUI')">FİLTRELER</button><button class="menu-btn" style="border-color:#ff66b2;color:#ff66b2;" onclick="openTagsUI()">ETİKETLER</button></div><button class="bj-btn" style="margin-top:50px;font-size:20px;" onclick="closeModal('escMenuUI');controls.lock();">OYUNA DÖN</button></div></div>
+<div id="settingsUI" class="ui-modal"><div class="settings-content"><button class="close-btn" onclick="openModal('escMenuUI')">&times;</button><h2 style="font-family:'Press Start 2P',cursive;">AYARLAR</h2><div class="setting-group"><span class="setting-title">GENEL AYARLAR</span><div style="display:flex;flex-direction:column;gap:10px;"><label style="color:#aaa;font-weight:bold;font-size:0.9rem;">Hassasiyet (Sens): <input type="range" id="inpSens" min="0.1" max="3" step="0.1"></label><label style="color:#aaa;font-weight:bold;font-size:0.9rem;">Görüş Açısı (FOV): <input type="range" id="inpFov" min="60" max="120" step="1"></label><label style="color:#aaa;font-weight:bold;font-size:0.9rem;">Ses Şiddeti: <input type="range" id="inpVol" min="0" max="1" step="0.1"></label></div></div><div class="setting-group"><span class="setting-title">SES EFEKTLERİ</span><div class="radio-options"><div class="radio-option"><input type="radio" name="opt_sound" value="on" checked id="sound_on"><label for="sound_on">AÇIK</label></div><div class="radio-option"><input type="radio" name="opt_sound" value="off" id="sound_off"><label for="sound_off">KAPALI</label></div></div></div></div></div>
+<div id="filtersUI" class="ui-modal"><div class="settings-content"><button class="close-btn" onclick="openModal('escMenuUI')">&times;</button><h2 style="font-family:'Press Start 2P',cursive;">FİLTRELER</h2><div class="setting-group"><span class="setting-title">FAVORİLER</span><div class="radio-options"><div class="radio-option"><input type="radio" name="opt_fav" value="all" checked id="fav_all"><label for="fav_all">HEPSİ</label></div><div class="radio-option"><input type="radio" name="opt_fav" value="only" id="fav_only"><label for="fav_only">SADECE KALPLİ</label></div></div></div><div class="setting-group"><span class="setting-title">ANOMALİLER</span><div class="radio-options"><div class="radio-option"><input type="radio" name="opt_anomaly" value="all" checked id="anom_all"><label for="anom_all">HEPSİ</label></div><div class="radio-option"><input type="radio" name="opt_anomaly" value="exclude" id="anom_exclude"><label for="anom_exclude">GİZLE</label></div><div class="radio-option"><input type="radio" name="opt_anomaly" value="only" id="anom_only"><label for="anom_only">SADECE ANOMALİ</label></div></div></div><div class="setting-group"><span class="setting-title">JAPON KORKU</span><div class="radio-options"><div class="radio-option"><input type="radio" name="opt_japan" value="all" checked id="japan_all"><label for="japan_all">HEPSİ</label></div><div class="radio-option"><input type="radio" name="opt_japan" value="exclude" id="japan_exclude"><label for="japan_exclude">GİZLE</label></div><div class="radio-option"><input type="radio" name="opt_japan" value="only" id="japan_only"><label for="japan_only">SADECE JAPON</label></div></div></div><div class="setting-group"><span class="setting-title">DEMO OYUNLAR</span><div class="radio-options"><div class="radio-option"><input type="radio" name="opt_demo" value="all" checked id="demo_all"><label for="demo_all">HEPSİ</label></div><div class="radio-option"><input type="radio" name="opt_demo" value="exclude" id="demo_exclude"><label for="demo_exclude">GİZLE</label></div><div class="radio-option"><input type="radio" name="opt_demo" value="only" id="demo_only"><label for="demo_only">SADECE DEMO</label></div></div></div><div class="setting-group"><span class="setting-title">SÜRE FİLTRESİ (ÇOKLU SEÇİM)</span><div class="radio-options"><div class="radio-option"><input type="checkbox" name="opt_time" value="short" id="time_short"><label for="time_short">&lt; 1 SAAT</label></div><div class="radio-option"><input type="checkbox" name="opt_time" value="medium" id="time_medium"><label for="time_medium">1 - 2 SAAT</label></div><div class="radio-option"><input type="checkbox" name="opt_time" value="long" id="time_long"><label for="time_long">&gt; 2 SAAT</label></div></div></div></div></div>
+<div id="listUI" class="game-display-overlay"><button class="close-btn" style="position:fixed;z-index:300;" onclick="closeModal('listUI')">&times;</button><h2 class="game-display-title" id="listTitle">Oyunlar</h2><div class="game-display-content" id="listGrid"></div></div>
+<div id="blackjackUI"><button class="close-btn" style="position:absolute;top:20px;right:40px;z-index:300;" onclick="closeModal('blackjackUI')">&times;</button><h2 style="font-family:'Courier Prime',monospace;color:#FFD700;margin-bottom:30px;">KART OYUNU (BLACKJACK)</h2><div class="bj-table"><div id="bjMessage">Kazandın!</div><div><div style="text-align:center;color:#FFD700;margin-bottom:5px;">KURAPİYE</div><div class="bj-hand" id="dealerHand"></div><div class="bj-score" id="dealerScore">Puan: ?</div></div><div class="bj-controls"><button class="bj-btn" id="bjHit" onclick="bjHit()">KART ÇEK</button><button class="bj-btn" id="bjStand" onclick="bjStand()">BEKLE</button><button class="bj-btn" id="bjRestart" onclick="initBlackjack()" style="display:none;background:#8a0a0a;color:#fff;border-color:#500;">TEKRAR OYNA</button></div><div><div style="text-align:center;color:#FFD700;margin-bottom:5px;">SEN</div><div class="bj-hand" id="playerHand"></div><div class="bj-score" id="playerScore">Puan: 0</div></div></div></div>
+<div id="narrative-screen"><div class="screen-content"><img id="bg-image" src="code/arkaplan.png" alt=""><img id="npc-character" src="code/adam.png" alt="Visitor"><div id="fisheye-overlay"></div></div><div class="dialogue-interface"><div class="npc-box"><div class="npc-text" id="npcText">...</div></div><div id="click-hint">Geçmek için tıkla</div><div class="player-options" id="playerOptions"></div></div></div>
+<div id="jumpscare"><div class="jumpscare-eyes"><div class="js-eye"></div><div class="js-eye"></div></div></div>
+
+<div id="tagsUI" class="ui-modal"><div class="settings-content" style="max-width:600px;"><button class="close-btn" onclick="closeTagsUI()">&times;</button><h2 style="font-family:'Courier Prime',monospace;color:#ff66b2;">🏷️ ETİKET FİLTRESİ</h2><div id="tagGrid" style="display:flex;flex-wrap:wrap;gap:14px;justify-content:center;"></div><div style="margin-top:25px;text-align:center;"><button class="bj-btn" style="background:#ff66b2;border-color:#cc0066;font-size:14px;" onclick="closeTagsUI()">KAPAT & UYGULA</button></div></div></div>
+
+<div id="pickerUI" class="ui-modal" style="display:none;align-items:flex-start;overflow-y:auto;padding:20px 0;">
+  <div style="background:#0a0010;border:3px solid #550033;width:min(900px,96vw);margin:auto;border-radius:12px;position:relative;overflow:hidden;">
+    <button class="close-btn" style="position:absolute;top:12px;right:18px;z-index:10;" onclick="closePickerUI()">&times;</button>
+    <div style="padding:28px 32px 10px;text-align:center;border-bottom:2px solid #330020;">
+      <h2 style="margin:0;font-family:'Courier Prime',monospace;color:#FFD700;font-size:1.6rem;letter-spacing:3px;">🎯 ÇARK OYUN SEÇİCİ</h2>
+      <p style="margin:6px 0 0;color:#886677;font-size:0.82rem;font-family:'Roboto',sans-serif;">Hile paneli.</p>
+    </div>
+
+    <div style="padding:20px 28px 10px;">
+      <div style="display:flex;align-items:center;gap:14px;margin-bottom:14px;">
+        <span style="font-family:'Press Start 2P',cursive;font-size:0.75rem;color:#ff4444;">💀 KORKU ÇARKI</span>
+        <span id="pickerHorrorBadge" style="background:#1a0000;border:1px solid #550000;color:#ff6666;padding:4px 12px;border-radius:20px;font-family:'Roboto',sans-serif;font-size:0.78rem;">Seçilmedi</span>
+      </div>
+      <div id="pickerHorrorGrid" style="display:flex;flex-wrap:wrap;gap:10px;max-height:220px;overflow-y:auto;padding-bottom:4px;"></div>
+    </div>
+
+    <div style="padding:16px 28px 24px;border-top:2px solid #220033;">
+      <div style="display:flex;align-items:center;gap:14px;margin-bottom:14px;">
+        <span style="font-family:'Press Start 2P',cursive;font-size:0.75rem;color:#ff66b2;">🌸 CHİLL ÇARKI</span>
+        <span id="pickerChillBadge" style="background:#0a0015;border:1px solid #440033;color:#ff99cc;padding:4px 12px;border-radius:20px;font-family:'Roboto',sans-serif;font-size:0.78rem;">Seçilmedi</span>
+      </div>
+      <div id="pickerChillGrid" style="display:flex;flex-wrap:wrap;gap:10px;max-height:220px;overflow-y:auto;padding-bottom:4px;"></div>
+    </div>
+
+    <div style="padding:0 28px 22px;text-align:center;">
+      <button class="bj-btn" style="background:#FFD700;color:#0a0010;border-color:#aa8800;font-size:15px;" onclick="closePickerUI()">KAPAT & UYGULA</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/data.js"></script>
+<script src="js/globals.js"></script>
+<script src="js/textures.js"></script>
+<script src="js/ui.js"></script>
+
+<!-- Oda ve nesne oluşturucuları -->
+<script src="js/builders-common.js"></script>
+<script src="js/room-corridor.js"></script>
+<script src="js/room-secret.js"></script>
+<script src="js/room-casino.js"></script>
+<script src="js/room-chill.js"></script>
+<script src="js/room-atlas.js"></script>
+
+<script src="js/main.js"></script>
+</body>
+</html>
