@@ -364,16 +364,11 @@ function buildChillRoom(){
     const cPole=new THREE.Mesh(new THREE.CylinderGeometry(0.08,0.08,1.3,32),new THREE.MeshStandardMaterial({color:0xffb3c6}));cPole.position.set(cx,3.85,cz);scene.add(cPole);
     chillScreens=[cJumbotronMats[0],cJumbotronMats[1],cJumbotronMats[4],cJumbotronMats[5]];
 
-    // Chill TV Duvarı
+    // Chill TV Duvarı (Duvardaki Buton kaldırıldı)
     const chillWallCanvas2=document.createElement('canvas');chillWallCanvas2.width=1024;chillWallCanvas2.height=512;
     window.chillWallCtx2=chillWallCanvas2.getContext('2d');window.chillWallTex2=new THREE.CanvasTexture(chillWallCanvas2);window.chillWallTex2.magFilter=THREE.LinearFilter;
     const cwTvCasing=new THREE.Mesh(new THREE.BoxGeometry(0.22,2.3,4.3),new THREE.MeshStandardMaterial({color:0xdd44aa,roughness:0.4,metalness:0.3}));cwTvCasing.position.set(cx+5.89,2.8,cz+2.5);scene.add(cwTvCasing);
     const cwScreen2=new THREE.Mesh(new THREE.PlaneGeometry(4.0,2.0),new THREE.MeshBasicMaterial({map:window.chillWallTex2}));cwScreen2.position.set(cx+5.77,2.8,cz+2.5);cwScreen2.rotation.y=-Math.PI/2;scene.add(cwScreen2);
-
-    const chillBtnGroup=new THREE.Group();chillBtnGroup.position.set(cx+5.95,1.2,cz+2.5);chillBtnGroup.rotation.y=-Math.PI/2;scene.add(chillBtnGroup);
-    const chillBtnPanel=new THREE.Mesh(new THREE.BoxGeometry(0.5,0.4,0.1),new THREE.MeshStandardMaterial({color:0xff66b2,roughness:0.4,metalness:0.3}));chillBtnGroup.add(chillBtnPanel);
-    const chillBtn=new THREE.Mesh(new THREE.CylinderGeometry(0.09,0.09,0.07,32).rotateX(Math.PI/2),new THREE.MeshStandardMaterial({color:0xffffff,roughness:0.2,metalness:0.2}));
-    chillBtn.position.set(0,0,0.06);chillBtn.userData={type:'BTN_CHILL_LIST',originalZ:0.06,isPressed:false};chillBtnGroup.add(chillBtn);objects.push(chillBtn);
 
     window.cwImgCache={};
     function getCWImg(src,cb){
@@ -389,55 +384,30 @@ function buildChillRoom(){
         ctx.font=font||`bold ${size}px 'Courier New',monospace`;ctx.textAlign='center';
         ctx.fillStyle='rgba(0,0,0,0.85)';ctx.fillText(text,x+1,y+1);ctx.fillStyle=col;ctx.fillText(text,x,y);
     }
-    window.chillListScrollY=0;
+
+    // Karartmasız, Seçilen Oyun Yazısız TV Ekranı
     window.updateChillWallScreen=function(){
         const ctx=window.chillWallCtx2;
-        if(window.chillWallMode==='list'){
-            const list=window.getFilteredChillGames?window.getFilteredChillGames():(window.chillWallListData||chillGames);
-            const THUMB_W=130,THUMB_H=62,ITEM_H=74,START_Y=62;
-            const visCount=Math.floor((512-START_Y)/ITEM_H);
-            const startIdx=Math.max(0,Math.floor((window.chillListScrollY||0)/ITEM_H));
-            ctx.fillStyle='#fff0f5';ctx.fillRect(0,0,1024,512);
-            ctx.fillStyle='rgba(255,100,180,0.1)';for(let i=0;i<512;i+=10)ctx.fillRect(0,i,1024,5);
-            stChill(ctx,'✿ ÇARKTAKI OYUNLAR ✿',512,40,'#cc0066',30);
-            ctx.fillStyle='#ff99cc';ctx.fillRect(50,50,924,2);
-            for(let i=startIdx;i<Math.min(list.length,startIdx+visCount+1);i++){
-                const yBase=START_Y+(i-startIdx)*ITEM_H;if(yBase>512)break;
-                const g=list[i];
-                ctx.fillStyle=i%2===0?'rgba(255,200,220,0.5)':'rgba(255,180,210,0.3)';ctx.fillRect(0,yBase,1024,ITEM_H-2);
-                const src=g.img||g.image||(g.steamId&&!isNaN(g.steamId)?`https://cdn.cloudflare.steamstatic.com/steam/apps/${g.steamId}/header.jpg`:null);
-                const ci=src?window.cwImgCache[src]:undefined;
-                if(ci){ctx.drawImage(ci,8,yBase+5,THUMB_W,THUMB_H);}
-                else if(src&&ci===undefined){getCWImg(src,()=>{if(window.chillWallMode==='list')window.updateChillWallScreen();});}
-                else{ctx.fillStyle='#ffccdd';ctx.fillRect(8,yBase+5,THUMB_W,THUMB_H);}
-                const nm=g.name.length>30?g.name.substring(0,28)+'…':g.name;
-                ctx.textAlign='left';ctx.fillStyle='rgba(0,0,0,0.8)';ctx.font="bold 19px 'Courier New',monospace";ctx.fillText(nm,149,yBase+33);
-                ctx.fillStyle='#880044';ctx.fillText(nm,148,yBase+32);
-                const sub=(g.desc||g.type||'').substring(0,40);const sub2=g.time||g.playtime||'';
-                ctx.fillStyle='rgba(0,0,0,0.7)';ctx.font="12px 'Courier New',monospace";ctx.fillText(sub,148.5,yBase+55.5);
-                ctx.fillStyle='#cc0055';ctx.fillText(sub,148,yBase+55);
-                if(sub2){ctx.fillStyle='#ff6699';ctx.fillText(sub2,840,yBase+55);}
-            }
-            if(list.length>visCount){const bH=Math.max(20,(visCount/list.length)*440);const bY=50+((window.chillListScrollY||0)/(Math.max(1,list.length-visCount)*ITEM_H))*360;ctx.fillStyle='rgba(200,0,100,0.5)';ctx.fillRect(1012,bY,12,bH);}
-        }else if(window.chillWallMode==='won'&&window.chillWallWonGame){
+        if(window.chillWallMode==='won'&&window.chillWallWonGame){
             const g=window.chillWallWonGame;
             const src=g.img||g.image||(g.steamId&&!isNaN(g.steamId)?`https://cdn.cloudflare.steamstatic.com/steam/apps/${g.steamId}/header.jpg`:null);
             const renderC=(img)=>{
                 ctx.fillStyle='#ffb3c6';ctx.fillRect(0,0,1024,512);
-                if(img){ctx.drawImage(img,0,0,1024,512);ctx.fillStyle='rgba(255,150,200,0.55)';ctx.fillRect(0,0,1024,512);}
-                stChill(ctx,'♥ KAZANILAN OYUN ♥',512,70,'#ffffff',30);
-                const fs=g.name.length>16?54:72;stChill(ctx,g.name,512,190,'#fff0f5',fs,`bold ${fs}px 'Special Elite',cursive`);
-                stChill(ctx,(g.desc||g.type||'').substring(0,50),512,275,'#ffe0f0',22);
-                stChill(ctx,'Süre: '+(g.time||g.playtime||''),512,315,'#ffe0f0',22);
-                ctx.fillStyle='rgba(200,0,100,0.5)';ctx.fillRect(80,340,864,2);
-                stChill(ctx,'Steam\'de ara: '+g.name.substring(0,30),512,375,'#ffccdd',20);
+                if(img){ctx.drawImage(img,0,0,1024,512);}
+                const fs=g.name.length>16?54:72;
+                stChill(ctx,g.name,512,190,'#fff0f5',fs,`bold ${fs}px 'Special Elite',cursive`);
+                stChill(ctx,(g.desc||g.type||'').substring(0,50),512,275,'#ffe0f0',24);
+                stChill(ctx,'Süre: '+(g.time||g.playtime||''),512,325,'#ffe0f0',24);
                 window.chillWallTex2.needsUpdate=true;
             };
-            getCWImg(src,renderC);return;
+            getCWImg(src,renderC);
+            return;
         }else{
             ctx.fillStyle='#ffe0ee';ctx.fillRect(0,0,1024,512);
             ctx.fillStyle='rgba(255,150,200,0.15)';for(let i=0;i<512;i+=14)ctx.fillRect(0,i,1024,7);
-            stChill(ctx,'✿',512,170,'#ff66b2',80);stChill(ctx,'ÇARKI ÇEVİR!',512,280,'#cc0055',38);stChill(ctx,'Atlassya',512,340,'#aa0044',28);
+            stChill(ctx,'✿',512,170,'#ff66b2',80);
+            stChill(ctx,'ÇARKI ÇEVİR!',512,280,'#cc0055',38);
+            stChill(ctx,'Atlassya',512,340,'#aa0044',28);
         }
         window.chillWallTex2.needsUpdate=true;
     };
