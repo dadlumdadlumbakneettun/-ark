@@ -10,7 +10,7 @@ function buildAtlasRoom() {
     const wallMat = new THREE.MeshStandardMaterial({ map: wallTex, roughness: 0.85, side: THREE.DoubleSide });
     const ceilMat = new THREE.MeshStandardMaterial({ map: ceilTex, roughness: 0.9 });
 
-    // Asla Kararmayan Parlak Mavi Ayna & Pencere Camı
+    // Parlak Mavi Ayna & Pencere Camı
     const mirrorBlueMat = new THREE.MeshBasicMaterial({
         color: 0x5b9bd5,
         side: THREE.DoubleSide
@@ -47,8 +47,7 @@ function buildAtlasRoom() {
     wRight.position.set(cx + roomW/2, 1.9, cz); wRight.rotation.y = -Math.PI / 2; scene.add(wRight);
 
     // ==========================================
-    // 1. KISALTILMIŞ VE YUKARI KALDIRILMIŞ MAKROME SARKIT AVİZE
-    // (Kafa hizasından yukarıda: 2.75m - 3.35m bandında asılı)
+    // 1. MAKROME SARKIT AVİZE
     // ==========================================
     const chandelierGroup = new THREE.Group();
     const macrameRopeMat = new THREE.MeshStandardMaterial({ color: 0xf6f3eb, roughness: 0.9 });
@@ -57,12 +56,10 @@ function buildAtlasRoom() {
     const ceilingCap = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 0.03, 24), ceilingCapMat);
     ceilingCap.position.set(0, 3.78, 0); chandelierGroup.add(ceilingCap);
 
-    // Kısaltılmış Askı İpi (0.45m boyunda)
     const cordLength = 0.45;
     const cord = new THREE.Mesh(new THREE.CylinderGeometry(0.007, 0.007, cordLength, 12), macrameRopeMat);
     cord.position.set(0, 3.8 - cordLength / 2, 0); chandelierGroup.add(cord);
 
-    // Avizenin Başlangıç Noktası (Tavana Yakın: Y = 3.35m)
     const lampCenterY = 3.8 - cordLength;
 
     const upperRing = new THREE.Mesh(new THREE.TorusGeometry(0.24, 0.016, 16, 32), macrameRopeMat);
@@ -91,7 +88,6 @@ function buildAtlasRoom() {
             chandelierGroup.add(crossStrand);
         }
 
-        // Püsküller (En alt ucu Y = 2.78m'de sonlanır, kafaya asla değmez)
         const fringeLen = 0.22 + (i % 3) * 0.06;
         const fringe = new THREE.Mesh(new THREE.CylinderGeometry(0.006, 0.004, fringeLen, 8), macrameRopeMat);
         fringe.position.set(x2, lampCenterY - 0.32 - fringeLen / 2, z2);
@@ -130,7 +126,7 @@ function buildAtlasRoom() {
     scene.add(windowGroup);
 
     // ==========================================
-    // ÇIKIŞ KAPISI (Ahşap Dokulu)
+    // ÇIKIŞ KAPISI
     // ==========================================
     const doorGroup = new THREE.Group();
     doorGroup.position.set(cx + roomW/2 - 0.08, 1.45, cz + 2.1);
@@ -151,7 +147,7 @@ function buildAtlasRoom() {
     scene.add(doorGroup);
 
     // ==========================================
-    // 3'LÜ BEYAZ GARDIROP (Ortada Gri Ayna)
+    // 3'LÜ BEYAZ GARDIROP
     // ==========================================
     const wardrobeGroup = new THREE.Group();
     const wBodyMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.25 });
@@ -163,13 +159,11 @@ function buildAtlasRoom() {
     const wCarcass = new THREE.Mesh(new THREE.BoxGeometry(wDepth, 3.3, wLength), wBodyMat);
     wCarcass.position.set(0, 1.65, 0); wardrobeGroup.add(wCarcass);
 
-    // 1. Sol Kapak
     const door1 = new THREE.Mesh(new THREE.BoxGeometry(0.04, 3.2, doorW - 0.02), new THREE.MeshStandardMaterial({ color: 0xf8f8f8, roughness: 0.2 }));
     door1.position.set(-wDepth/2 - 0.02, 1.65, -doorW); wardrobeGroup.add(door1);
     const h1 = new THREE.Mesh(new THREE.BoxGeometry(0.025, 0.65, 0.02), handleMat);
     h1.position.set(-wDepth/2 - 0.045, 1.65, -doorW + doorW/2 - 0.1); wardrobeGroup.add(h1);
 
-    // 2. Orta Kapak (Gri Ayna)
     const door2 = new THREE.Mesh(new THREE.BoxGeometry(0.04, 3.2, doorW - 0.02), new THREE.MeshStandardMaterial({ color: 0xf4f4f4, roughness: 0.2 }));
     door2.position.set(-wDepth/2 - 0.02, 1.65, 0); wardrobeGroup.add(door2);
     const mirrorWardrobe = new THREE.Mesh(new THREE.PlaneGeometry(doorW - 0.08, 3.0), solidGrayMirrorMat);
@@ -179,7 +173,6 @@ function buildAtlasRoom() {
     const h2 = new THREE.Mesh(new THREE.BoxGeometry(0.025, 0.65, 0.02), handleMat);
     h2.position.set(-wDepth/2 - 0.05, 1.65, doorW/2 - 0.1); wardrobeGroup.add(h2);
 
-    // 3. Sağ Kapak
     const door3 = new THREE.Mesh(new THREE.BoxGeometry(0.04, 3.2, doorW - 0.02), new THREE.MeshStandardMaterial({ color: 0xf8f8f8, roughness: 0.2 }));
     door3.position.set(-wDepth/2 - 0.02, 1.65, doorW); wardrobeGroup.add(door3);
     const h3 = new THREE.Mesh(new THREE.BoxGeometry(0.025, 0.65, 0.02), handleMat);
@@ -189,7 +182,7 @@ function buildAtlasRoom() {
     scene.add(wardrobeGroup);
 
     // ==========================================
-    // DİKEY KİTAPLIK (Alttaki Dolap Uzun)
+    // DİKEY KİTAPLIK
     // ==========================================
     const bookcaseGroup = new THREE.Group();
     const bcDepth = 0.75, bcWidth = 1.05, bcHeight = 3.3;
@@ -207,7 +200,6 @@ function buildAtlasRoom() {
     const bcBottomP = new THREE.Mesh(new THREE.BoxGeometry(bcDepth, 0.03, bcWidth), wBodyMat);
     bcBottomP.position.set(0, 0.015, 0); bookcaseGroup.add(bcBottomP);
 
-    // Uzatılmış Alt Dolap (Y: 0 - 1.22m)
     const cabinetHeight = 1.22;
     const bcDoor = new THREE.Mesh(new THREE.BoxGeometry(0.03, cabinetHeight - 0.04, bcWidth - 0.07), new THREE.MeshStandardMaterial({ color: 0xf6f6f6, roughness: 0.2 }));
     bcDoor.position.set(-bcDepth/2 + 0.015, cabinetHeight / 2, 0); bookcaseGroup.add(bcDoor);
@@ -288,6 +280,35 @@ function buildAtlasRoom() {
         p2.position.set(-bedLen/2 + 0.82, 0.64, side); bedGroup.add(p2);
     }
 
+    // ==========================================
+    // YATAKTAKİ 3D TABLET (E İLE ALINABİLİR)
+    // ==========================================
+    if (!hasTablet) {
+        const tabletGroup = new THREE.Group();
+        const tabBodyGeo = new THREE.BoxGeometry(0.44, 0.02, 0.30);
+        const tabBodyMat = new THREE.MeshStandardMaterial({ color: 0x16181d, roughness: 0.3, metalness: 0.8 });
+        const tabBody = new THREE.Mesh(tabBodyGeo, tabBodyMat);
+        tabletGroup.add(tabBody);
+
+        const tabScreenGeo = new THREE.PlaneGeometry(0.38, 0.25);
+        const tabScreenMat = new THREE.MeshBasicMaterial({ color: 0x00e5ff });
+        const tabScreen = new THREE.Mesh(tabScreenGeo, tabScreenMat);
+        tabScreen.rotation.x = -Math.PI / 2;
+        tabScreen.position.y = 0.012;
+        tabletGroup.add(tabScreen);
+
+        tabletGroup.position.set(0.2, 0.63, 0.1);
+        tabletGroup.rotation.set(0, 0.35, 0);
+        tabletGroup.userData = { type: 'PICKUP_TABLET' };
+        tabBody.userData = { type: 'PICKUP_TABLET' };
+        tabScreen.userData = { type: 'PICKUP_TABLET' };
+
+        tabletMesh = tabletGroup;
+        bedGroup.add(tabletMesh);
+        objects.push(tabBody);
+        objects.push(tabScreen);
+    }
+
     bedGroup.position.set(cx - roomW/2 + bedLen/2, 0, cz - roomD/2 + bedWidth/2);
     scene.add(bedGroup);
 
@@ -315,7 +336,7 @@ function buildAtlasRoom() {
     scene.add(tableGroup);
 
     // ==========================================
-    // 2. BİLGİSAYAR MASASI (ÜÇ EKRANIN HEPSİ TAM KOLTUĞA DÖNÜK)
+    // 2. BİLGİSAYAR MASASI
     // ==========================================
     const deskGroup = new THREE.Group();
     const deskMat = new THREE.MeshStandardMaterial({ color: 0x121212, roughness: 0.35 });
@@ -348,43 +369,36 @@ function buildAtlasRoom() {
     const scrGeoVertical = new THREE.BoxGeometry(0.5, 0.85, 0.04);
     const mFrameMat = new THREE.MeshStandardMaterial({ color: 0x0a0a0a, metalness: 0.8 });
 
-    // 1. SOL EKRAN (DİKEY - DUVAR TARAFI): İçeriye doğru tam koltuğa dönük (rotation.y = -0.42)
     const mLeft = new THREE.Mesh(scrGeoVertical, [mFrameMat, mFrameMat, mFrameMat, mFrameMat, mFrameMat, createMonitorScreen('LIVE CHAT / CODE', '#1c0d29', '#ff3399', true)]);
     mLeft.position.set(-0.76, 1.32, 0.24); 
-    mLeft.rotation.y = -0.42; // Tam koltuğa bakar
+    mLeft.rotation.y = -0.42;
     deskGroup.add(mLeft);
     const sPoleL = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 0.45), mFrameMat); 
     sPoleL.position.set(-0.76, 0.98, 0.24); deskGroup.add(sPoleL);
 
-    // 2. ORTA EKRAN (YATAY): Tam karşıya doğrudan koltuğa bakar (rotation.y = 0)
     const mCenter = new THREE.Mesh(scrGeoHorizontal, [mFrameMat, mFrameMat, mFrameMat, mFrameMat, mFrameMat, createMonitorScreen('ATLAS DESKTOP', '#0b1320', '#00e5ff')]);
     mCenter.position.set(0.0, 1.2, 0.18); 
-    mCenter.rotation.y = 0; // Koltuğa doğrudan dik
+    mCenter.rotation.y = 0;
     deskGroup.add(mCenter);
     const sPoleC = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 0.35), mFrameMat); 
     sPoleC.position.set(0.0, 0.95, 0.18); deskGroup.add(sPoleC);
 
-    // 3. SAĞ EKRAN (YATAY): İçeriye doğru tam koltuğa dönük (rotation.y = +0.42)
     const mRight = new THREE.Mesh(scrGeoHorizontal, [mFrameMat, mFrameMat, mFrameMat, mFrameMat, mFrameMat, createMonitorScreen('STREAM / OBS', '#0f2419', '#00ff88')]);
     mRight.position.set(0.82, 1.2, 0.24); 
-    mRight.rotation.y = 0.42; // Tam koltuğa bakar
+    mRight.rotation.y = 0.42;
     deskGroup.add(mRight);
     const sPoleR = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 0.35), mFrameMat); 
     sPoleR.position.set(0.82, 0.95, 0.24); deskGroup.add(sPoleR);
 
-    // Mousepad
     const pad = new THREE.Mesh(new THREE.BoxGeometry(1.3, 0.015, 0.44), new THREE.MeshStandardMaterial({ color: 0x181818 }));
     pad.position.set(0.0, 0.845, -0.15); deskGroup.add(pad);
 
-    // Klavye
     const kb = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.03, 0.18), new THREE.MeshStandardMaterial({ color: 0x2b2b2b }));
     kb.position.set(0.12, 0.865, -0.15); deskGroup.add(kb);
 
-    // Beyaz Fare
     const mouse = new THREE.Mesh(new THREE.BoxGeometry(0.09, 0.03, 0.14), new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.25 }));
     mouse.position.set(-0.32, 0.865, -0.15); deskGroup.add(mouse);
 
-    // Kasa
     const pcCase = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.68, 0.6), new THREE.MeshStandardMaterial({ color: 0x0a0a0a, metalness: 0.9, roughness: 0.2 }));
     pcCase.position.set(-deskW/2 + 0.22, 1.18, 0.18); deskGroup.add(pcCase);
 
@@ -423,7 +437,6 @@ function buildAtlasRoom() {
     dresserGroup.position.set(dresserX, 0, cz + roomD/2 - dDepth/2);
     scene.add(dresserGroup);
 
-    // Mavi Ayna
     const mirrorH = 1.05;
     const wallMirrorGroup = new THREE.Group();
     const dMirror = new THREE.Mesh(new THREE.PlaneGeometry(dWidth, mirrorH), mirrorBlueMat);
@@ -436,9 +449,7 @@ function buildAtlasRoom() {
     wallMirrorGroup.position.set(dresserX, dHeight + mirrorH/2 + 0.04, cz + roomD/2 - 0.04);
     scene.add(wallMirrorGroup);
 
-    // ==========================================
-    // DUVARDAKİ DİKEY SİYAH PANEL
-    // ==========================================
+    // Dikey Siyah Panel
     const blackPanelMat = new THREE.MeshStandardMaterial({ color: 0x0a0a0a, roughness: 0.95 });
     const panelBottomY = dHeight;
     const panelTopY = 2.6;
@@ -451,9 +462,7 @@ function buildAtlasRoom() {
     blackPanel.position.set(panelX, panelBottomY + panelHeight/2, cz + roomD/2 - panelThickness/2);
     scene.add(blackPanel);
 
-    // ==========================================
-    // KOLTUK
-    // ==========================================
+    // Koltuk
     const chairGroup = new THREE.Group();
     const cSkinMat = new THREE.MeshStandardMaterial({ color: 0x1f1f1f, roughness: 0.5 });
 
