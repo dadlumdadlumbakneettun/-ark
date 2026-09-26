@@ -1,14 +1,5 @@
 const allGames = [
   {
-    "name": "Scary Game 2 The Mad Shepherd",
-    "type": "Korku",
-    "playtime": "30 dakika altı",
-    "desc": "köyde yeni çoban olarak ilk günün... ve her şey ters gidiyor. hayvanlar kayıp. Köylüler garip. Gerçek ise daha korkunç",
-    "steamId": "4479970",
-    "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4479970/6d3ae95a5b6d5b61c7e81d76f4d68abe603b6607/ss_6d3ae95a5b6d5b61c7e81d76f4d68abe603b6607.1920x1080.jpg?t=1779180438",
-    "year": 2026
-  },
-  {
     "name": "Below",
     "type": "Korku",
     "playtime": "30-1 saat arası",
@@ -43,24 +34,6 @@ const allGames = [
     "year": "",
     "desc": "Bu, birinci şahıs bakış açısıyla oynanan Çin yapımı bir korku oyunudur. Oyuncular bir cinayet mahalline gidecek, cinayetin ardındaki gerçeği ortaya çıkaracak ve kayıp kişileri bulacaklardır.",
     "image": ""
-  },
-  {
-    "name": "THE KIDNAP",
-    "type": "gerilim, japon korku",
-    "playtime": "1-2 saat arası",
-    "steamId": "2593900",
-    "year": 2023,
-    "desc": "Kaçırma | bir kaçırılma olayını konu alan bir korku oyunudur.",
-    "image": ""
-  },
-  {
-    "name": "THE EXIT 8",
-    "type": "anomali",
-    "playtime": "30 dakika altı",
-    "steamId": "2653790",
-    "year": 2023,
-    "desc": "Sonsuz bir yeraltı geçidinde mahsur kaldınız. \"8 Numaralı Çıkış\"a ulaşmak için çevrenizi dikkatlice gözlemleyin.",
-    "image": "https://m.media-amazon.com/images/S/pv-target-images/454c819e446250e3220eee68135aa077ec22ec3f581a9259b0612d72d5769ba1._SX1080_FMjpg_.jpg"
   },
   {
     "name": "SHINKANSE 0",
@@ -99,33 +72,6 @@ const allGames = [
     "image": "https://i.ytimg.com/vi/G7SNn-r8LQw/maxresdefault.jpg"
   },
   {
-    "name": "Platform 8",
-    "type": "anomali",
-    "playtime": "30-1 saat arası",
-    "steamId": "2903560",
-    "year": 2024,
-    "desc": "Sonsuza dek giden bir trende mahsur kaldınız. Anormalliklere dikkat edin ve bir çıkış yolu bulun.",
-    "image": "https://image.api.playstation.com/vulcan/ap/rnd/202410/3005/4a861c9ae3a1a097941feb76bc57c5b290338df1e9e00fcf.jpg"
-  },
-  {
-    "name": "The Closing Shift",
-    "type": "japon korku",
-    "playtime": "30-1 saat arası",
-    "steamId": "1843090",
-    "year": 2022,
-    "desc": "kapanış vardiyasında çalışan bir kız hakkında bir korku oyunudur.",
-    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT9VBhuM8Dm3dcHt-rb4S7jl05nl8CYNE7yy1mbrsgX8A&s=10"
-  },
-  {
-    "name": "PARASOCIAL",
-    "type": "japon korku",
-    "playtime": "1-2 saat arası",
-    "steamId": "2314720",
-    "year": 2023,
-    "desc": "Canlı yayıncıyı konu alan bir korku oyunudur.",
-    "image": "https://img.tapimg.net/market/images/d1563e356d006ea6d90b6e8e27ecb95b.png"
-  },
-  {
     "name": "THE CONVENIENCE STORE",
     "type": "japon korku",
     "playtime": "30-1 saat arası",
@@ -162,15 +108,6 @@ const allGames = [
     "image": ""
   },
   {
-    "name": "HELLMART",
-    "type": "korku",
-    "playtime": "2 saat üstü",
-    "steamId": "3762550",
-    "image": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/3762550/8d5561f21bb46dd76d7a8b863c901d6a05e19204/header.jpg?t=1770292620",
-    "year": 2026,
-    "desc": "Süpermarket simülatörü korkuyla buluşuyor. 24 saat açık bir mağazada tezgahtarsın. Gündüzleri müşterilere hizmet verip satış hedeflerine ulaşırken, geceleri tuhaf ve ürkütücü müşterilere karşı tetikte olmalısın. Uzak Kuzey'de 7 gün boyunca hayatta kalmaya çalış"
-  },
-  {
     "name": "Last Report",
     "type": "korku, psikolojik",
     "playtime": "2 saat üstü",
@@ -198,15 +135,6 @@ const allGames = [
     "desc": "Ne yani, Toilet 8 🚽💩'i bilmiyor musunuz? Şimdiye kadar yapılmış en çocukça parodi anomali oyunu mu? Her seferinde neyin yanlış olduğunu bulmanız gereken halka açık tuvaletlerden oluşan bir döngüde sıkışıp kaldınız. Saçma sürprizler ve sizi güldürmek için tasarlanmış bolca kaka-osuruk mizahı."
   },
   {
-    "name": "Don't Play This",
-    "type": "korku",
-    "playtime": "1-2 saat arası",
-    "steamId": "3319120",
-    "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3319120/07d1ccb485d61cb593b42e8932fecf03e18f4a9c/header.jpg?t=1776353186",
-    "year": 2026,
-    "desc": "Beş korkunç hikaye, ama hepsi aynı sona sahip. Bunu oynayabilecek misin? Çok az kişinin tamamlayabileceği, birinci şahıs psikolojik korku oyunu."
-  },
-  {
     "name": "The Guest 2",
     "type": "korku",
     "playtime": "30-1 saat arası",
@@ -214,12 +142,6 @@ const allGames = [
     "steamId": "",
     "year": 2026,
     "desc": "The Guest II, birinci şahıs bakış açısıyla oynanan psikolojik bir korku oyunudur."
-  },
-  {
-    "name": "The Strange Lights",
-    "type": "korku",
-    "playtime": "40 dakika",
-    "image": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/3823950/6e090fcb7c2b15dbbdbdc2d78fff00ef053b0032/header.jpg?t=1770474068"
   },
   {
     "name": "The Last Letter",
@@ -285,15 +207,6 @@ const allGames = [
     "desc": "Willie's Nightfall, birinci şahıs bakış açısıyla oynanan bir korku oyunudur. Gizli belgeleri bulmak için Willie'nin Şirketi'nin ürkütücü ofislerini keşfedin. Ama yalnız değilsiniz. Şirketin uğursuz maskotu, çarpık ve katil bir fare olan Willie, sizi avlıyor."
   },
   {
-    "name": "Supernormal",
-    "type": "korku",
-    "playtime": "1-2 saat arası",
-    "image": "https://i.ytimg.com/vi/G3JBgbb5vCc/maxresdefault.jpg",
-    "steamId": "",
-    "year": 2024,
-    "desc": "Allison Road'un ilhamıyla SUPERNORMAL, görünüşte sıradan bir dairede geçen karanlık sırları içeren bir psikolojik korku oyunudur. Dedektif Wyatt olarak oyna, Masato Sakamoto'nun kızının kayboluşunu çözme göreviyle karşı karşıyasın. İpuçları ara ve korkunç gerçeği açığa çıkar."
-  },
-  {
     "name": "HorrorCore: Labirent ve Korku Havuzları",
     "type": "korku",
     "playtime": "30-1 saat arası",
@@ -355,6 +268,213 @@ const allGames = [
     "steamId": "4081840",
     "year": 2026,
     "desc": "Yandera sizi evinize kilitledi ve sizden aşk ilanı istiyor. Onunla kalabilir veya kaçmaya çalışabilirsiniz. Evi keşfedin, ama dikkatli olun, Yandera sizi öldürebilir."
+  },
+  {
+    "name": "Psalm 2",
+    "type": "Korku",
+    "playtime": "1 saat altı",
+    "desc": "Asansörün tek güvenli yer olduğu birinci şahıs psikolojik korku oyunu. Her kat yeni bir gerçekliktir. Her katın yeni bir sakini vardır. Aşağıya inişine devam etmek için onu bul.",
+    "steamId": "3916260",
+    "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3916260/292b5119d56af4d329d7062f5d58798dd153b96d/header.jpg?t=1779366432",
+    "year": 2026
+  },
+  {
+    "name": "April 24th",
+    "type": "Korku",
+    "playtime": "1 saat altı",
+    "desc": "Baş karakter, her zaman gerçeği ortaya çıkarmaya çalışan deneyimli bir gazetecidir. Polis tarafından korunan eve girmeyi başarır.",
+    "steamId": "2907190",
+    "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2907190/de15b8324cdfada0387533e08b54956ed6900a31/header.jpg?t=1790361315",
+    "year": 2024
+  },
+  {
+    "name": "Pieces of me",
+    "type": "Korku",
+    "playtime": "2 saat altı",
+    "desc": "“Pieces of Me”, ani korkutucu sahneler içeren klasik bir korku oyunu değil, yürüyüş simülasyonu türünde psikolojik bir gerilim-drama oyunudur. “September 7th” oyununun bir yan ürünüdür.",
+    "steamId": "2479740",
+    "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2479740/44e72118d11ea1aa13b7b4bfe4fa5b2ec1337765/header.jpg?t=1790361708",
+    "year": 2025
+  },
+  {
+    "name": "Summer of '58",
+    "type": "Korku",
+    "playtime": "2 saat altı",
+    "desc": "2008 yazında, ana karakter, takipçilerinin isteği üzerine, terk edilmiş \"Yunost\" kampını keşfetmek için Rusya'ya gider. Yerel halk, buranın huzursuz ruhlar tarafından meskun olduğunu söylüyor. Bunun kontrol edilmesi gerekecek.",
+    "steamId": "1609080",
+    "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1609080/36f55fc898c702ed36d0d6e5905025f0aad27abc/header.jpg?t=1790348745",
+    "year": 2021
+  },
+  {
+    "name": "Kiosk",
+    "type": "Korku",
+    "playtime": "2 saat altı",
+    "desc": "Kiosk, yağmur altında kalan büfenize gelen gece müşterileri için sipariş hazırladığınız bir korku yemek oyunudur. Gerilim artarken gizemli ziyaretçilere hizmet ederken tüyler ürpertici bir atmosferle karşılaşırsınız.",
+    "steamId": "3126330",
+    "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3126330/header.jpg?t=1762538146",
+    "year": 2025
+  },
+  {
+    "name": "From The Darkness",
+    "type": "Korku",
+    "playtime": "2 saat altı",
+    "desc": "Karanlıktan adlı oyun, korkutucu bir atmosfere sahip psikolojik bir korku oyunudur ve oyun eski bir Sovyet döneminden kalma terk edilmiş bir apartmanda geçmektedir.",
+    "steamId": "1517340",
+    "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1517340/header.jpg?t=1617678911",
+    "year": 2021
+  },
+  {
+    "name": "9 Childs Street",
+    "type": "Korku",
+    "playtime": "1 saat altı",
+    "desc": "Bu, birinci şahıs bakış açısıyla oynanan bağımsız bir korku oyunudur. 9 Childs Street'te, kırmızı şapkalı meraklı küçük bir çocuğun gözünden, yakın zamanda terk edilmiş bir evin ve esir sakinlerinin korkunç atmosferini keşfedeceksiniz.",
+    "steamId": "1895890",
+    "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1895890/header.jpg?t=1709150172",
+    "year": 2023
+  },
+  {
+    "name": "Butcherman",
+    "type": "Korku",
+    "playtime": "1 saat altı",
+    "desc": "Bir seri katil tarafından kaçırılmanın psikolojik korkusunu yaşayın. Kaçma arzusuyla çevrenizdeki her şeyi keşfedin, zekanızı kullanın, sırları açığa çıkarın ve kurbanın yerinde olmanın hayal edilemez dehşetiyle yüzleşin. Gerçek bir hikayeden esinlenmiştir.",
+    "steamId": "3979350",
+    "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3979350/7e95102b884d426be88882a84ec10a92ac3a7ac9/header.jpg?t=1783697682",
+    "year": 2026
+  },
+  {
+    "name": "Luto",
+    "type": "Korku",
+    "playtime": "4 saat üstü",
+    "desc": "Luto, evinden ayrılamayan birinin rolünü üstlendiğin psikolojik bir korku deneyimidir. Kaçmaya yönelik her girişimin seni bilinmeyenin daha da derinlerine sürükleyecek; burada hiçbir şey göründüğü gibi değildir ve her şey duyularını sınayacaktır.",
+    "steamId": "1729740",
+    "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1729740/def13c797b5c98624d24fb0b75d2e57ea0fdbf70/header.jpg?t=1784213685",
+    "year": 2025
+  },
+  {
+    "name": "Obsessed : Night Shift",
+    "type": "Korku",
+    "playtime": "1 saat altı",
+    "desc": "Gece geç saatlerde bir dükkanda çalışıp yemek pişirmeniz gereken ve bununla birlikte gelen dehşeti konu alan, PSX'ten ilham alan bir korku oyunu.",
+    "steamId": "3831660",
+    "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3831660/0d0a770dfb4443028b41ae7a0f508962c114a4f2/header.jpg?t=1772781174",
+    "year": 2025
+  },
+  {
+    "name": "771",
+    "type": "Korku",
+    "playtime": "1 saat altı",
+    "desc": "\"771\", her biri farklı bir geliştirici tarafından yaratılmış 7 benzersiz oyun bölümünden oluşan, birinci şahıs bakış açılı bir psikolojik korku oyunudur.",
+    "steamId": "3916440",
+    "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3916440/0b61223e01e0cb436573a4627cf73476c26d31bb/header.jpg?t=1789419659",
+    "year": 2026
+  },
+  {
+    "name": "[HERROR] Gas Station Case",
+    "type": "Korku",
+    "playtime": "2 saat altı",
+    "desc": "1999 Ohio'sunda geçen, sinematik ve hikâye odaklı bir uzaylı korku oyunu. Issız bir benzin istasyonunda gece vardiyasına kal. Gölden çıkarılan gizemli bir evrak çantası. Çalınmış uranyum yakıtı. Kana bulanmış bir iş arkadaşı.",
+    "steamId": "3902800",
+    "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3902800/417f91184685b635446fd7fc0449944ac54366a0/header.jpg?t=1788870180",
+    "year": 2026
+  },
+  {
+    "name": "Rehaunted",
+    "type": "Korku",
+    "playtime": "2 saat altı",
+    "desc": "Her ipucunun yanlış hissettirdiği bir eve girin. Brutal bir suç mahallini araştırın, gizli kanıtları ortaya çıkarın ve sessizliğin altına gömülmüş rahatsız edici gerçeği parça parça birleştirmek için dedektif araçlarınızı kullanın.",
+    "steamId": "4538140",
+    "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4538140/3634bc1eef00e4b73b2acc65e8f1b3eba8dd558a/header.jpg?t=1789401594",
+    "year": 2026
+  },
+  {
+    "name": "The Inn-Sanity",
+    "type": "Korku",
+    "playtime": "2 saat üstü",
+    "desc": "90’ların başı. Sessiz bir otelde sadece bir gece kaldınız ve ertesi sabah eski dünyanın yok olduğunu öğrendiniz. Uzaylılarla ilgili rüyalar, geçmişinizin sırları ve canavarlara dönüşen diğer konuklar. Bu otel, check-out yapmanıza izin vermeyecek.",
+    "steamId": "2688570",
+    "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2688570/header.jpg?t=1736495622",
+    "year": 2025
+  },
+  {
+    "name": "Obey the Voice",
+    "type": "Korku",
+    "playtime": "2 saat altı",
+    "desc": "Buraya “Ses”i dinlemek için geldiniz. Onun dediklerini yapın. Ama diğer seslere kulak asmayın... “Obey the Voice”, sürekli tehditler ve kurallara dayalı zorluklar üzerine kurulu, gerilim dolu bir psikolojik korku deneyimidir; bu oyunda hayatta kalmak, aşırı stres altında dikkat, zamanlama ve karar verme becerilerine bağlıdır.",
+    "steamId": "3919190",
+    "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3919190/70a1fc53e5c8574c5756d1a8b44fc4af49a81f28/header.jpg?t=1781365747",
+    "year": 2026
+  },
+  {
+    "name": "Don't Be Afraid 2",
+    "type": "Korku",
+    "playtime": "2 saat üstü",
+    "desc": "Bu tüyler ürpertici korku kaçış odası oyununda, gerçeklikle kusursuz bir şekilde iç içe geçen kabusun derinliklerine dalın. Bu korkunç malikaneden çıkış yolunu bulabilecek misiniz, yoksa korkularınıza yenik mi düşeceksiniz? Geçmişinizle yüzleşip onu aşabilecek misiniz, yoksa geçmişiniz sizi mahvedecek mi?",
+    "steamId": "2631880",
+    "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2631880/header.jpg?t=1790097709",
+    "year": 2024
+  },
+  {
+    "name": "Animaly Bar: NO HUMANITY!",
+    "type": "Korku",
+    "playtime": "2 saat altı",
+    "desc": "Bir goril olarak barını işlet ve müşterilerinin arasına sızan hayvan kostümü giymiş insanları avla. Gelen müşterileri dikkatle incele, kostümü ele veren ipuçlarını bul, söyledikleri sloganı sına ve sahtekarları pompalı tüfeğinle havaya uçur. Hedefini doğru seç... yoksa avlanan sen olursun.",
+    "steamId": "4580600",
+    "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4580600/42aab009953446c7bcdd4fc3612a4e04e6849441/header.jpg?t=1789892509",
+    "year": 2026
+  },
+  {
+    "name": "The Deadseat",
+    "type": "Korku",
+    "playtime": "1 saat altı",
+    "desc": "Uzun bir araba yolculuğu sırasında arka koltukta el konsoluyla oynadığınız bir korku oyunu.",
+    "steamId": "3667230",
+    "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3667230/6fec8f4b856c515bd053112ab5fe8d3e1b84fc35/header.jpg?t=1752886112",
+    "year": 2025
+  },
+  {
+    "name": "The Gretlow Tapes",
+    "type": "Korku",
+    "playtime": "2 saat altı",
+    "desc": "Yanına sadece kameranı alarak, bu kısa ve atmosferik korku oyununda terk edilmiş Gretlow House'u araştır. Gerçekçi bir buluntu film perspektifiyle tüyler ürpertici bir gizemi gün yüzüne çıkar.",
+    "steamId": "3433230",
+    "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3433230/2ec569f40d7ec9506e7abc3ce69ac1e714dbf53f/header.jpg?t=1787238509",
+    "year": 2025
+  },
+  {
+    "name": "Midnight Snack",
+    "type": "Korku",
+    "playtime": "1 saat altı",
+    "desc": "Mikrodalga fırının düğmelerini kullanarak ürkütücü bir ormanda dolaştığınız kısa bir birinci şahıs korku oyunu.",
+    "steamId": "3363200",
+    "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3363200/df4d719970d908f5bef1c8582d81cada3b46bdaf/header.jpg?t=1746169319",
+    "year": 2025
+  },
+  {
+    "name": "The Backrooms 1998 - Found Footage Survival Horror Game",
+    "type": "Korku",
+    "playtime": "2 saat altı",
+    "desc": "The Backrooms: 1998, 1998 yılında kazara The Backrooms’un derinliklerine düşen genç bir gencin hikâyesini anlatan, birinci şahıs bakış açılı, “buluntu görüntü” tarzında bir psikolojik korku ve hayatta kalma oyunudur. Serbestçe dolaşın, işaretleyin, keşfedin ve hikâyeyi çözmeye çalışın — ancak yalnız değilsiniz. Çığlık atmayın.",
+    "steamId": "1985930",
+    "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1985930/header.jpg?t=1790236871",
+    "year": 2025
+  },
+  {
+    "name": "Alternate Watch",
+    "type": "Korku",
+    "playtime": "1 saat altı",
+    "desc": "itch io",
+    "steamId": "",
+    "image": "https://i.ytimg.com/vi/pSuUbhb2Vws/maxresdefault.jpg",
+    "year": 2022
+  },
+  {
+    "name": "Among Ashes",
+    "type": "Korku",
+    "playtime": "2 saat üstü",
+    "desc": "Among Ashes, oyuncuyu dehşete düşüren bir hayatta kalma korku oyunu. Arkadaşın sana birinin internette paylaştığı bir oyunun bağlantısını attı fakat oynadıkça bir şeylerin yanlış olduğunu anlamaya başlıyorsun. Ne yaparsan yap OY̴̙̞͈̱̻̆͌̎̃͒N̷͗̎͊̂͒͜AM̵̬̱̃AY̷̗̿̑͘A̸͍̿ͅ ̸̢̜̞̃̔D̵̞̋̀̊̈ͅEV̵̤̂A̶̺͂̑MET\"",
+    "steamId": "2430900",
+    "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2430900/header.jpg?t=1753432351",
+    "year": 2025
   }
 ];
 
@@ -685,12 +805,9 @@ const favoriteGames = [
   "Gas Station Case",
   "Skull Hotel",
   "No, I'm not a Human",
-  "HELLMART",
   "Last Report",
-  "Don't Play This",
   "Good Pizza Great Pizza",
   "FIGHT-QUEST",
   "Tales Beyond The Tomb No Witnesses",
-  "Escape from Yandere",
-  "Scary Game 2 The Mad Shepherd"
+  "Escape from Yandere"
 ];
