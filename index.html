@@ -2,6 +2,7 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
+<meta name="referrer" content="no-referrer">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Atlassya</title>
 <link rel="stylesheet" href="css/style.css">
@@ -10,15 +11,93 @@
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
 </head>
 <body>
-<div id="blocker"><div id="instructions"><p id="clickText">OYNAMAK İÇİN TIKLA</p><p class="hint">Hareket: W A S D &nbsp;|&nbsp; Zıplama: BOŞLUK &nbsp;|&nbsp; Eğilme: SHIFT <br><br> Menü: ESC &nbsp;|&nbsp; Etkileşim: Tıkla</p></div></div>
+<div id="blocker"><div id="instructions"><p id="clickText">OYNAMAK İÇİN TIKLA</p><p class="hint">Hareket: W A S D &nbsp;|&nbsp; Zıplama: BOŞLUK &nbsp;|&nbsp; Eğilme: SHIFT <br><br> Tableti Aç/Kapa: Q &nbsp;|&nbsp; Eşya Al: E &nbsp;|&nbsp; Menü: ESC</p></div></div>
 <div id="crosshair"></div>
 <div id="interactText"></div>
 <div id="vignette"></div>
 <div id="screenMessage"></div>
 <div id="gameCanvas"></div>
+
+<!-- Envanter Bölümü: 2 Slotlu, Frosted Glass Blur -->
+<div id="inventoryBar">
+  <div class="inv-slot" id="invSlot1">
+    <span class="slot-key">1</span>
+    <div class="slot-item" id="slotItem1"></div>
+  </div>
+  <div class="inv-slot" id="invSlot2">
+    <span class="slot-key">2</span>
+    <div class="slot-item" id="slotItem2"></div>
+  </div>
+</div>
+
+<!-- Animasyonlu Tablet Arayüzü -->
+<div id="tabletOverlay">
+  <div id="tabletDevice">
+    <div id="tabletCameraDot"></div>
+    <div id="tabletScreen">
+      <!-- Tablet Üst Kontrol Barı -->
+      <div id="tabletHeader">
+        <div id="tabletTabs">
+          <button class="tablet-tab-btn active" id="tabHorrorBtn" onclick="switchTabletTab('HORROR')">💀 KORKU</button>
+          <button class="tablet-tab-btn" id="tabChillBtn" onclick="switchTabletTab('CHILL')">🌸 CHILL</button>
+        </div>
+
+        <!-- Süre Filtreleri -->
+        <div id="tabletTimeFilters">
+          <button class="tab-filter-btn active" id="tflt_all" onclick="setTabletTimeFilter('all')">TÜMÜ (<span id="cnt_all">0</span>)</button>
+          <button class="tab-filter-btn" id="tflt_lt1" onclick="setTabletTimeFilter('lt1')">1&lt; (<span id="cnt_lt1">0</span>)</button>
+          <button class="tab-filter-btn" id="tflt_gt1" onclick="setTabletTimeFilter('gt1')">1&gt; (<span id="cnt_gt1">0</span>)</button>
+          <button class="tab-filter-btn" id="tflt_gt2" onclick="setTabletTimeFilter('gt2')">2&gt; (<span id="cnt_gt2">0</span>)</button>
+          <button class="tab-filter-btn" id="tflt_gt4" onclick="setTabletTimeFilter('gt4')">4&gt; (<span id="cnt_gt4">0</span>)</button>
+        </div>
+
+        <!-- Sağ Taraf: Genel Filtreler & Kapatma Butonu -->
+        <div id="tabletActions">
+          <button id="tabletFilterBtn" onclick="openModal('filtersUI')">⚙️ FİLTRELER</button>
+          <button id="tabletCloseBtn" onclick="closeTablet()">✕</button>
+        </div>
+      </div>
+
+      <!-- Çarktan Çıkan Oyun Bildirim Kartı -->
+      <div id="tabletWonBanner" style="display:none;">
+        <button id="closeWonBannerBtn" onclick="dismissWonBanner()">✕</button>
+        <img id="wonBannerImg" src="" alt="Won Game">
+        <div id="wonBannerDetails">
+          <h2 id="wonBannerTitle">OYUN ADI</h2>
+          <div id="wonBannerMeta">
+            <span id="wonBannerType" class="badge">Tür</span>
+            <span id="wonBannerTime" class="badge">Süre</span>
+          </div>
+          <p id="wonBannerDesc">Oyun açıklaması buraya gelecek.</p>
+        </div>
+      </div>
+
+      <!-- 4'erli Aşağı Doğru Kaydırılabilir Oyun Listesi Izgarası -->
+      <div id="tabletGamesGrid"></div>
+
+      <!-- Kart Üstüne Tıklanınca Açılan Detay Bilgi Penceresi -->
+      <div id="tabletDetailModal" style="display:none;">
+        <button id="closeDetailModalBtn" onclick="closeGameDetail()">✕</button>
+        <div id="tabletDetailContent">
+          <img id="detailModalImg" src="" alt="Game Banner">
+          <div id="detailModalInfo">
+            <h2 id="detailModalTitle">OYUN BAŞLIĞI</h2>
+            <div id="detailModalMeta">
+              <span id="detailModalType" class="badge">Tür</span>
+              <span id="detailModalTime" class="badge">Süre</span>
+            </div>
+            <p id="detailModalDesc">Oyun açıklaması...</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
 <div id="escMenuUI" class="ui-modal"><div class="settings-content" style="text-align:center;background:transparent;border:none;box-shadow:none;"><h2 style="font-size:40px;text-shadow:4px 4px 0 #000;">DURAKLATILDI</h2><div class="menu-grid" style="flex-direction:column;align-items:center;"><button class="menu-btn" onclick="openModal('settingsUI')">AYARLAR</button><button class="menu-btn" onclick="openModal('filtersUI')">FİLTRELER</button><button class="menu-btn" style="border-color:#ff66b2;color:#ff66b2;" onclick="openTagsUI()">ETİKETLER</button></div><button class="bj-btn" style="margin-top:50px;font-size:20px;" onclick="closeModal('escMenuUI');controls.lock();">OYUNA DÖN</button></div></div>
 <div id="settingsUI" class="ui-modal"><div class="settings-content"><button class="close-btn" onclick="openModal('escMenuUI')">&times;</button><h2 style="font-family:'Press Start 2P',cursive;">AYARLAR</h2><div class="setting-group"><span class="setting-title">GENEL AYARLAR</span><div style="display:flex;flex-direction:column;gap:10px;"><label style="color:#aaa;font-weight:bold;font-size:0.9rem;">Hassasiyet (Sens): <input type="range" id="inpSens" min="0.1" max="3" step="0.1"></label><label style="color:#aaa;font-weight:bold;font-size:0.9rem;">Görüş Açısı (FOV): <input type="range" id="inpFov" min="60" max="120" step="1"></label><label style="color:#aaa;font-weight:bold;font-size:0.9rem;">Ses Şiddeti: <input type="range" id="inpVol" min="0" max="1" step="0.1"></label></div></div><div class="setting-group"><span class="setting-title">SES EFEKTLERİ</span><div class="radio-options"><div class="radio-option"><input type="radio" name="opt_sound" value="on" checked id="sound_on"><label for="sound_on">AÇIK</label></div><div class="radio-option"><input type="radio" name="opt_sound" value="off" id="sound_off"><label for="sound_off">KAPALI</label></div></div></div></div></div>
-<div id="filtersUI" class="ui-modal"><div class="settings-content"><button class="close-btn" onclick="openModal('escMenuUI')">&times;</button><h2 style="font-family:'Press Start 2P',cursive;">FİLTRELER</h2><div class="setting-group"><span class="setting-title">FAVORİLER</span><div class="radio-options"><div class="radio-option"><input type="radio" name="opt_fav" value="all" checked id="fav_all"><label for="fav_all">HEPSİ</label></div><div class="radio-option"><input type="radio" name="opt_fav" value="only" id="fav_only"><label for="fav_only">SADECE KALPLİ</label></div></div></div><div class="setting-group"><span class="setting-title">ANOMALİLER</span><div class="radio-options"><div class="radio-option"><input type="radio" name="opt_anomaly" value="all" checked id="anom_all"><label for="anom_all">HEPSİ</label></div><div class="radio-option"><input type="radio" name="opt_anomaly" value="exclude" id="anom_exclude"><label for="anom_exclude">GİZLE</label></div><div class="radio-option"><input type="radio" name="opt_anomaly" value="only" id="anom_only"><label for="anom_only">SADECE ANOMALİ</label></div></div></div><div class="setting-group"><span class="setting-title">JAPON KORKU</span><div class="radio-options"><div class="radio-option"><input type="radio" name="opt_japan" value="all" checked id="japan_all"><label for="japan_all">HEPSİ</label></div><div class="radio-option"><input type="radio" name="opt_japan" value="exclude" id="japan_exclude"><label for="japan_exclude">GİZLE</label></div><div class="radio-option"><input type="radio" name="opt_japan" value="only" id="japan_only"><label for="japan_only">SADECE JAPON</label></div></div></div><div class="setting-group"><span class="setting-title">DEMO OYUNLAR</span><div class="radio-options"><div class="radio-option"><input type="radio" name="opt_demo" value="all" checked id="demo_all"><label for="demo_all">HEPSİ</label></div><div class="radio-option"><input type="radio" name="opt_demo" value="exclude" id="demo_exclude"><label for="demo_exclude">GİZLE</label></div><div class="radio-option"><input type="radio" name="opt_demo" value="only" id="demo_only"><label for="demo_only">SADECE DEMO</label></div></div></div><div class="setting-group"><span class="setting-title">SÜRE FİLTRESİ (ÇOKLU SEÇİM)</span><div class="radio-options"><div class="radio-option"><input type="checkbox" name="opt_time" value="short" id="time_short"><label for="time_short">&lt; 1 SAAT</label></div><div class="radio-option"><input type="checkbox" name="opt_time" value="medium" id="time_medium"><label for="time_medium">1 - 2 SAAT</label></div><div class="radio-option"><input type="checkbox" name="opt_time" value="long" id="time_long"><label for="time_long">&gt; 2 SAAT</label></div></div></div></div></div>
+<div id="filtersUI" class="ui-modal"><div class="settings-content"><button class="close-btn" onclick="onCloseFilterModal()">&times;</button><h2 style="font-family:'Press Start 2P',cursive;">FİLTRELER</h2><div class="setting-group"><span class="setting-title">FAVORİLER</span><div class="radio-options"><div class="radio-option"><input type="radio" name="opt_fav" value="all" checked id="fav_all"><label for="fav_all">HEPSİ</label></div><div class="radio-option"><input type="radio" name="opt_fav" value="only" id="fav_only"><label for="fav_only">SADECE KALPLİ</label></div></div></div><div class="setting-group"><span class="setting-title">ANOMALİLER</span><div class="radio-options"><div class="radio-option"><input type="radio" name="opt_anomaly" value="all" checked id="anom_all"><label for="anom_all">HEPSİ</label></div><div class="radio-option"><input type="radio" name="opt_anomaly" value="exclude" id="anom_exclude"><label for="anom_exclude">GİZLE</label></div><div class="radio-option"><input type="radio" name="opt_anomaly" value="only" id="anom_only"><label for="anom_only">SADECE ANOMALİ</label></div></div></div><div class="setting-group"><span class="setting-title">JAPON KORKU</span><div class="radio-options"><div class="radio-option"><input type="radio" name="opt_japan" value="all" checked id="japan_all"><label for="japan_all">HEPSİ</label></div><div class="radio-option"><input type="radio" name="opt_japan" value="exclude" id="japan_exclude"><label for="japan_exclude">GİZLE</label></div><div class="radio-option"><input type="radio" name="opt_japan" value="only" id="japan_only"><label for="japan_only">SADECE JAPON</label></div></div></div><div class="setting-group"><span class="setting-title">DEMO OYUNLAR</span><div class="radio-options"><div class="radio-option"><input type="radio" name="opt_demo" value="all" checked id="demo_all"><label for="demo_all">HEPSİ</label></div><div class="radio-option"><input type="radio" name="opt_demo" value="exclude" id="demo_exclude"><label for="demo_exclude">GİZLE</label></div><div class="radio-option"><input type="radio" name="opt_demo" value="only" id="demo_only"><label for="demo_only">SADECE DEMO</label></div></div></div><div class="setting-group"><span class="setting-title">SÜRE FİLTRESİ (ÇOKLU SEÇİM)</span><div class="radio-options"><div class="radio-option"><input type="checkbox" name="opt_time" value="short" id="time_short"><label for="time_short">&lt; 1 SAAT</label></div><div class="radio-option"><input type="checkbox" name="opt_time" value="medium" id="time_medium"><label for="time_medium">1 - 2 SAAT</label></div><div class="radio-option"><input type="checkbox" name="opt_time" value="long" id="time_long"><label for="time_long">&gt; 2 SAAT</label></div></div></div><div style="text-align:center;margin-top:20px;"><button class="bj-btn" onclick="onCloseFilterModal()">TAMAM</button></div></div></div>
 <div id="listUI" class="game-display-overlay"><button class="close-btn" style="position:fixed;z-index:300;" onclick="closeModal('listUI')">&times;</button><h2 class="game-display-title" id="listTitle">Oyunlar</h2><div class="game-display-content" id="listGrid"></div></div>
 <div id="blackjackUI"><button class="close-btn" style="position:absolute;top:20px;right:40px;z-index:300;" onclick="closeModal('blackjackUI')">&times;</button><h2 style="font-family:'Courier Prime',monospace;color:#FFD700;margin-bottom:30px;">KART OYUNU (BLACKJACK)</h2><div class="bj-table"><div id="bjMessage">Kazandın!</div><div><div style="text-align:center;color:#FFD700;margin-bottom:5px;">KURAPİYE</div><div class="bj-hand" id="dealerHand"></div><div class="bj-score" id="dealerScore">Puan: ?</div></div><div class="bj-controls"><button class="bj-btn" id="bjHit" onclick="bjHit()">KART ÇEK</button><button class="bj-btn" id="bjStand" onclick="bjStand()">BEKLE</button><button class="bj-btn" id="bjRestart" onclick="initBlackjack()" style="display:none;background:#8a0a0a;color:#fff;border-color:#500;">TEKRAR OYNA</button></div><div><div style="text-align:center;color:#FFD700;margin-bottom:5px;">SEN</div><div class="bj-hand" id="playerHand"></div><div class="bj-score" id="playerScore">Puan: 0</div></div></div></div>
 <div id="narrative-screen"><div class="screen-content"><img id="bg-image" src="code/arkaplan.png" alt=""><img id="npc-character" src="code/adam.png" alt="Visitor"><div id="fisheye-overlay"></div></div><div class="dialogue-interface"><div class="npc-box"><div class="npc-text" id="npcText">...</div></div><div id="click-hint">Geçmek için tıkla</div><div class="player-options" id="playerOptions"></div></div></div>
