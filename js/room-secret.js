@@ -115,13 +115,7 @@ function buildSecretRoom(){
     const jumbotron=new THREE.Mesh(new THREE.BoxGeometry(1.5,0.8,1.5),jumbotronMats);jumbotron.position.set(cx,3.2,cz);scene.add(jumbotron);
     const pole=new THREE.Mesh(new THREE.CylinderGeometry(0.08,0.08,1.3,32),new THREE.MeshStandardMaterial({color:0x111,metalness:0.9,roughness:0.2}));pole.position.set(cx,3.85,cz);scene.add(pole);
 
-    const buttonPanelGroup=new THREE.Group();buttonPanelGroup.position.set(cx-5.95,1.5,cz);buttonPanelGroup.rotation.y=Math.PI/2;scene.add(buttonPanelGroup);
-    const panel=new THREE.Mesh(new THREE.BoxGeometry(1.8,0.8,0.15),new THREE.MeshStandardMaterial({color:0x666666,metalness:0.4,roughness:0.6}));buttonPanelGroup.add(panel);
-    const btnActions=['BTN_WHEEL_LIST','BTN_WISHLIST','BTN_DISCO'];
-    for(let i=0;i<3;i++){
-        const btn=new THREE.Mesh(new THREE.CylinderGeometry(0.12,0.12,0.1,64).rotateX(Math.PI/2),new THREE.MeshStandardMaterial({color:0xaa0000,roughness:0.2,metalness:0.5}));
-        btn.position.set(-0.6+i*0.6,0,0.08);btn.userData={type:btnActions[i],originalZ:0.08,isPressed:false};buttonPanelGroup.add(btn);objects.push(btn);
-    }
+    // NOT: Duvardaki butonlar tamamen kaldırıldı.
 
     // Zar Masası
     const dtGroup=new THREE.Group();dtGroup.position.set(cx+4.5,0,cz+4.5);scene.add(dtGroup);
@@ -211,7 +205,7 @@ function buildSecretRoom(){
     });
     window.updateRobotButtons();
 
-    // Korku Odası TV Duvarı
+    // TV Duvarı (Duvardaki butonlar kaldırıldı)
     const horrorWallCanvas=document.createElement('canvas');horrorWallCanvas.width=1024;horrorWallCanvas.height=512;
     window.horrorWallCtx=horrorWallCanvas.getContext('2d');
     window.horrorWallTex=new THREE.CanvasTexture(horrorWallCanvas);
@@ -222,13 +216,6 @@ function buildSecretRoom(){
     const hwMat=new THREE.MeshBasicMaterial({map:window.horrorWallTex});
     const hwScreen=new THREE.Mesh(new THREE.PlaneGeometry(4.8,2.2),hwMat);
     hwScreen.position.set(cx+5.898,2.6,cz-1.5);hwScreen.rotation.y=-Math.PI/2;scene.add(hwScreen);
-    
-    const hwBtnGroup=new THREE.Group();hwBtnGroup.position.set(cx+5.88,0.55,cz-1.5);hwBtnGroup.rotation.y=-Math.PI/2;scene.add(hwBtnGroup);
-    const hwBtnPanel=new THREE.Mesh(new THREE.BoxGeometry(0.5,0.35,0.1),new THREE.MeshStandardMaterial({color:0x111111,metalness:0.5,roughness:0.5}));
-    hwBtnGroup.add(hwBtnPanel);
-    const hwToggleBtn=new THREE.Mesh(new THREE.CylinderGeometry(0.09,0.09,0.07,32).rotateX(Math.PI/2),new THREE.MeshStandardMaterial({color:0x660000,roughness:0.2,metalness:0.5}));
-    hwToggleBtn.position.set(0,0,0.06);hwToggleBtn.userData={type:'BTN_HW_TOGGLE',originalZ:0.06,isPressed:false};
-    hwBtnGroup.add(hwToggleBtn);objects.push(hwToggleBtn);
 
     window.hwImgCache={};
     window.horrorListScrollY=0;
@@ -242,47 +229,17 @@ function buildSecretRoom(){
         img.src=src;
     }
 
+    // Karartmasız, Seçilen Oyun Yazısız ve Steam ID'siz TV ekranı
     window.updateHorrorWallScreen=function(){
         const ctx=window.horrorWallCtx;
-        if(window.horrorWallMode==='list'&&window.horrorWallListData){
-            const list=window.horrorWallListData;
-            const THUMB_W=120,THUMB_H=56,ITEM_H=66,START_Y=64;
-            const visCount=Math.floor((512-START_Y)/ITEM_H);
-            const startIdx=Math.max(0,Math.floor((window.horrorListScrollY||0)/ITEM_H));
-            ctx.fillStyle='#0a0000';ctx.fillRect(0,0,1024,512);
-            ctx.fillStyle='rgba(255,0,0,0.06)';for(let i=0;i<512;i+=8)ctx.fillRect(0,i,1024,4);
-            const title=window.horrorWallListTitle||'OYUNLAR';
-            ctx.textAlign='center';ctx.font="bold 34px 'Courier New',monospace";
-            ctx.fillStyle='rgba(0,0,0,0.95)';ctx.fillText(title,514,45);
-            ctx.fillStyle='#ff2222';ctx.fillText(title,512,44);
-            ctx.fillStyle='#ff4444';ctx.fillRect(60,56,904,2);
-            for(let i=startIdx;i<Math.min(list.length,startIdx+visCount+1);i++){
-                const yBase=START_Y+(i-startIdx)*ITEM_H;if(yBase>512)break;
-                const g=list[i];
-                ctx.fillStyle=i%2===0?'rgba(50,0,0,0.7)':'rgba(255,0,0,0.5)';ctx.fillRect(0,yBase,1024,ITEM_H-2);
-                const src=g.img||g.image||(g.steamId&&!isNaN(g.steamId)?`https://cdn.cloudflare.steamstatic.com/steam/apps/${g.steamId}/header.jpg`:null);
-                const cachedImg=src?window.hwImgCache[src]:undefined;
-                if(cachedImg){ctx.drawImage(cachedImg,8,yBase+4,THUMB_W,THUMB_H);}
-                else if(src&&cachedImg===undefined){getHWImg(src,()=>{if(window.horrorWallMode==='list')window.updateHorrorWallScreen();});}
-                else{ctx.fillStyle='#1a0000';ctx.fillRect(8,yBase+4,THUMB_W,THUMB_H);}
-                const nm=g.name.length>30?g.name.substring(0,28)+'…':g.name;
-                ctx.textAlign='left';ctx.fillStyle='rgba(0,0,0,0.95)';ctx.font="bold 20px 'Courier New',monospace";ctx.fillText(nm,139,yBase+29);
-                ctx.fillStyle=window.favoriteGames&&window.favoriteGames.includes(g.name)?'#ffd700':'#ccffcc';ctx.fillText(nm,138,yBase+28);
-                const sub=(g.type||g.desc||'').substring(0,36);const sub2=g.playtime||g.time||'';
-                ctx.fillStyle='rgba(0,0,0,0.8)';ctx.font="13px 'Courier New',monospace";ctx.fillText(sub,138.5,yBase+50.5);
-                ctx.fillStyle='#ff8888';ctx.fillText(sub,138,yBase+50);
-                if(sub2){ctx.fillStyle='#ffaa44';ctx.fillText(sub2,870,yBase+50);}
-            }
-            if(list.length>visCount){const bH=Math.max(20,(visCount/list.length)*440);const bY=56+((window.horrorListScrollY||0)/(Math.max(1,list.length-visCount)*ITEM_H))*360;ctx.fillStyle='rgba(255,50,50,0.5)';ctx.fillRect(1012,bY,12,bH);}
-        }else if(window.horrorWallMode==='won'&&window.horrorWallWonGame){
+        if(window.horrorWallMode==='won'&&window.horrorWallWonGame){
             const g=window.horrorWallWonGame;
             const src=g.img||g.image||(g.steamId&&!isNaN(g.steamId)?`https://cdn.cloudflare.steamstatic.com/steam/apps/${g.steamId}/header.jpg`:null);
             const renderWon=(img)=>{
-                ctx.fillStyle='#0a0000';ctx.fillRect(0,0,1024,512);
+                ctx.fillStyle='#000';ctx.fillRect(0,0,1024,512);
                 if(img){ctx.drawImage(img,0,0,1024,512);}
-                ctx.fillStyle='rgba(0,0,0,0.6)';ctx.fillRect(0,0,1024,512);
-                ctx.fillStyle='rgba(255,0,0,0.07)';for(let i=0;i<512;i+=6)ctx.fillRect(0,i,1024,3);
-                drawWonInfo(ctx,g);window.horrorWallTex.needsUpdate=true;
+                drawWonInfo(ctx,g);
+                window.horrorWallTex.needsUpdate=true;
             };
             getHWImg(src,renderWon);
             return;
@@ -299,12 +256,10 @@ function buildSecretRoom(){
             ctx.fillStyle='rgba(0,0,0,0.95)';ctx.fillText(text,x+2,y+2);ctx.fillText(text,x-2,y+2);ctx.fillText(text,x+2,y-2);ctx.fillText(text,x-2,y-2);
             ctx.fillStyle=col;ctx.fillText(text,x,y);
         }
-        st('◄ SEÇİLEN OYUN ►',512,80,'#ff2222',34);
-        const fs=g.name.length>16?58:80;st(g.name,512,200,'#ffd700',fs,`bold ${fs}px 'Special Elite',cursive`);
-        st('Tür: '+(g.type||''),512,278,'#aaffaa',26);
-        st('Süre: '+(g.playtime||''),512,320,'#aaffaa',26);
-        ctx.fillStyle='rgba(255,50,50,0.5)';ctx.fillRect(100,345,824,2);
-        st('Steam ID: '+(g.steamId||''),512,380,'#ff8888',22);
+        const fs=g.name.length>16?58:80;
+        st(g.name,512,180,'#ffd700',fs,`bold ${fs}px 'Special Elite',cursive`);
+        st('Tür: '+(g.type||''),512,270,'#aaffaa',28);
+        st('Süre: '+(g.playtime||g.time||''),512,325,'#aaffaa',28);
         window.horrorWallTex.needsUpdate=true;
     }
 
