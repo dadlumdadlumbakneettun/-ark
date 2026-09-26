@@ -48,7 +48,6 @@ function updateCrosshair() {
     }
 }
 
-// Fare imlecinin tarayıcı kilitlenmelerinde kaybolmasını engelleyen tam kurtarıcı
 function releasePointerAndRestoreCursor() {
     if (document.pointerLockElement) {
         try { document.exitPointerLock(); } catch(e) {}
@@ -59,15 +58,28 @@ function releasePointerAndRestoreCursor() {
     if (canvas) canvas.style.cursor = 'auto';
 }
 
+function pickupTabletItem() {
+    if (hasTablet) return;
+    hasTablet = true;
+    playTickSound();
+    if (tabletMesh && tabletMesh.parent) {
+        tabletMesh.parent.remove(tabletMesh);
+    }
+    objects = objects.filter(o => o.userData.type !== 'PICKUP_TABLET' && (!o.parent || o.parent.userData.type !== 'PICKUP_TABLET'));
+    updateInventoryUI();
+    showScreenMessage("TABLET ENVANTERE EKLENDİ! [Q]");
+}
+
 function onMouseDown() {
     if (!controls.isLocked) return;
     if (interactTarget) {
-        const type = interactTarget.userData.type;
-        if (type === 'ROBOT_ACTION_BTN') {
+        const type = interactTarget.userData.type || (interactTarget.parent && interactTarget.parent.userData.type);
+        if (type === 'PICKUP_TABLET') {
+            pickupTabletItem();
+        } else if (type === 'ROBOT_ACTION_BTN') {
             playTickSound();
             window.playRobotAction(interactTarget.userData.actionKey);
         } else if (type === 'TOGGLE_COMMERCIAL_FRIDGE') {
-            // Dolabın kendi dahili animasyonunu tek tıkla baştan pürüzsüzce oynatır
             playTickSound();
             if (window.commercialFridgeAction) {
                 window.commercialFridgeAction.stop().reset().play();
@@ -76,16 +88,16 @@ function onMouseDown() {
             gameState = 'SECRET_ROOM'; scene.fog.near = 15; controls.getObject().position.set(100, 2.0, 4); camera.quaternion.setFromEuler(new THREE.Euler(0, 0, 0, 'YXZ')); velocity.set(0, 0, 0); updateCrosshair();
         } else if (type === 'GO_TO_CASINO') {
             gameState = 'CASINO_ROOM'; scene.fog.near = 15; controls.getObject().position.set(-100, 2.0, -4); camera.quaternion.setFromEuler(new THREE.Euler(0, Math.PI, 0, 'YXZ')); velocity.set(0, 0, 0); updateCrosshair();
-  } else if (type === 'GO_TO_CHILL_ROOM') {
+        } else if (type === 'GO_TO_CHILL_ROOM') {
             gameState = 'CHILL_ROOM'; scene.fog.near = 30; controls.getObject().position.set(0, 2.0, 96); camera.quaternion.setFromEuler(new THREE.Euler(0, Math.PI, 0, 'YXZ')); velocity.set(0, 0, 0); updateCrosshair();
-   } else if (type === 'GO_TO_ATLAS_ROOM') {
+        } else if (type === 'GO_TO_ATLAS_ROOM') {
             gameState = 'ATLAS_ROOM'; scene.fog.near = 20; controls.getObject().position.set(2.4, 2.0, -97.9); camera.quaternion.setFromEuler(new THREE.Euler(0, Math.PI / 2, 0, 'YXZ')); velocity.set(0, 0, 0); updateCrosshair();
         } else if (type === 'GO_TO_CORRIDOR') {
             const returnZ = gameState === 'ATLAS_ROOM' ? -7 : 2;
             gameState = 'CORRIDOR'; scene.fog.near = 5; controls.getObject().position.set(0, 2.0, returnZ); camera.quaternion.setFromEuler(new THREE.Euler(0, 0, 0, 'YXZ')); velocity.set(0, 0, 0); updateCrosshair();
         } else if (type === 'OUTER_DOOR') {
             gameState = 'OUTER_DOOR'; controls.unlock(); document.getElementById('blocker').style.display = 'none'; startNarrative();
-        } else if (type.startsWith('WHEEL')) {
+        } else if (type && type.startsWith('WHEEL')) {
             isDraggingWheel = true; winningGame = null; activeWheelType = type;
         } else if (type === 'PLAY_BLACKJACK') {
             initBlackjack(); openModal('blackjackUI');
@@ -144,64 +156,73 @@ function onMouseDown() {
                 playTickSound(); ticks++;
                 if (ticks > 15) { clearInterval(rollInterval); isRollingDice = false; luckyBonus = (v1 + v2) * 2; showScreenMessage(`ŞANSIN %${luckyBonus} ARTTI!`); }
             }, 80);
-        } else if (type.startsWith('BTN_')) {
-            const btn = interactTarget; if (btn.userData.isPressed) return;
-            btn.userData.isPressed = true; btn.position.z = btn.userData.originalZ - 0.025; btn.material.color.setHex(0xff0000);
-            if (type === 'BTN_WHEEL_LIST') {
-                if(window.updateHorrorWallScreen){window.horrorWallMode='list';window.horrorWallListTitle='ÇARKTAKI OYUNLAR';window.horrorWallListData=gameList;window.horrorListScrollY=0;window.updateHorrorWallScreen();}
-            } else if (type === 'BTN_WISHLIST') {
-                if(window.updateHorrorWallScreen){window.horrorWallMode='list';window.horrorWallListTitle='İSTEK LİSTESİ';window.horrorWallListData=wishlist;window.horrorListScrollY=0;window.updateHorrorWallScreen();}
-            } else if (type === 'BTN_CHILL_LIST') {
-                if(window.updateChillWallScreen){window.chillWallListData=window.getFilteredChillGames?window.getFilteredChillGames():chillGames;window.chillWallMode='list';window.chillListScrollY=0;window.updateChillWallScreen();}
-            } else if (type === 'BTN_DISCO') { isDiscoMode = !isDiscoMode; if (!isDiscoMode) { secretRoomLight.color.setHex(0xffeedd); secretRoomLight.intensity = 1.5; }
-            } else if (type === 'BTN_HW_TOGGLE') {
-                window.horrorWallMode='idle';if(window.updateHorrorWallScreen)window.updateHorrorWallScreen();
-            }
-            setTimeout(() => { btn.position.z = btn.userData.originalZ; btn.material.color.setHex(0xaa0000); btn.userData.isPressed = false; }, 300);
         }
     }
 }
 
 function onMouseUp() { isDraggingWheel = false; isDrawing = false; lastDrawUV = null; }
 
+// Çark durduğunda filtrelenmiş aktif havuzdan oyun seçimi yapar
 function calculateWinningGame(type) {
     if (type === 'HORROR') {
-        let rad = wheelMesh.rotation.y % (2 * Math.PI); if (rad < 0) rad += 2 * Math.PI;
-        const sliceAngle = (2 * Math.PI) / gameList.length; let pointerAngle = (Math.PI / 2 - rad + 2 * Math.PI) % (2 * Math.PI);
-        let index = Math.floor(pointerAngle / sliceAngle);
+        const pool = (typeof gameList !== 'undefined' && gameList.length > 0) ? gameList : allGames;
+        let validList = pool.filter(g => g.type !== 'error');
+        if (validList.length === 0) validList = allGames;
+
+        let index = Math.floor(Math.random() * validList.length);
+
         if (luckyBonus > 0) {
             if (Math.random() * 100 < luckyBonus) {
-                const favIndices = []; gameList.forEach((g, i) => { if (favoriteGames.includes(g.name)) favIndices.push(i); });
-                if (favIndices.length > 0 && !favIndices.includes(index)) {
+                const favIndices = []; validList.forEach((g, i) => { if (favoriteGames.includes(g.name)) favIndices.push(i); });
+                if (favIndices.length > 0) {
                     index = favIndices[Math.floor(Math.random() * favIndices.length)];
-                    let targetRad = (Math.PI / 2) - ((index * sliceAngle) + (sliceAngle / 2)); wheelMesh.rotation.y = targetRad;
                 }
             }
             luckyBonus = 0;
         }
+
         if (window.forcedHorrorGame) {
-            const fi = gameList.findIndex(g => g.name === window.forcedHorrorGame.name);
-            if (fi >= 0) { index = fi; wheelMesh.rotation.y = (Math.PI / 2) - ((fi * sliceAngle) + (sliceAngle / 2)); }
+            const fi = validList.findIndex(g => g.name === window.forcedHorrorGame.name);
+            if (fi >= 0) index = fi;
             window.forcedHorrorGame = null;
         }
-        winningGame = gameList[index]; cachedGameImage.crossOrigin = "Anonymous"; cachedGameImage.src = getGameImagePath(winningGame);
-        if(window.updateHorrorWallScreen){window.horrorWallMode='won';window.horrorWallWonGame=winningGame;window.updateHorrorWallScreen();}
+
+        winningGame = validList[index];
+        cachedGameImage.crossOrigin = "Anonymous";
+        cachedGameImage.src = getGameImagePath(winningGame);
+
+        if (window.showTabletWonGame) window.showTabletWonGame(winningGame);
+
+        if (window.updateHorrorWallScreen) {
+            window.horrorWallMode = 'won';
+            window.horrorWallWonGame = winningGame;
+            window.updateHorrorWallScreen();
+        }
     } else if (type === 'CHILL') {
-        const filteredChill=window.getFilteredChillGames?window.getFilteredChillGames():chillGames;
-        let rad = chillWheelMesh.rotation.y % (2 * Math.PI); if (rad < 0) rad += 2 * Math.PI;
-        const sliceAngle = (2 * Math.PI) / filteredChill.length; let pointerAngle = (Math.PI / 2 - rad + 2 * Math.PI) % (2 * Math.PI);
-        let index = Math.floor(pointerAngle / sliceAngle);
+        const chillPool = window.getFilteredChillGames();
+        let validList = chillPool.length > 0 ? chillPool : chillGames;
+
+        let index = Math.floor(Math.random() * validList.length);
+
         if (window.forcedChillGame) {
-            const fi = filteredChill.findIndex(g => g.name === window.forcedChillGame.name);
-            if (fi >= 0) { index = fi; chillWheelMesh.rotation.y = (Math.PI / 2) - ((fi * sliceAngle) + (sliceAngle / 2)); }
+            const fi = validList.findIndex(g => g.name === window.forcedChillGame.name);
+            if (fi >= 0) index = fi;
             window.forcedChillGame = null;
         }
-        chillWonGame = filteredChill[index];
-        if(window.updateChillWallScreen){window.chillWallMode='won';window.chillWallWonGame=chillWonGame;window.updateChillWallScreen();}
+
+        chillWonGame = validList[index];
+
+        if (window.showTabletWonGame) window.showTabletWonGame(chillWonGame);
+
+        if (window.updateChillWallScreen) {
+            window.chillWallMode = 'won';
+            window.chillWallWonGame = chillWonGame;
+            window.updateChillWallScreen();
+        }
+
         let img = new Image(); img.crossOrigin = "Anonymous"; img.src = getGameImagePath(chillWonGame);
         img.onload = () => {
-            chillScreenCtx.fillStyle = '#0a0000'; chillScreenCtx.fillRect(0, 0, 1024, 512); chillScreenCtx.drawImage(img, 0, 0, 1024, 512);
-            chillScreenCtx.fillStyle = 'rgba(0,0,0,0.7)'; chillScreenCtx.fillRect(0, 380, 1024, 132);
+            chillScreenCtx.drawImage(img, 0, 0, 1024, 512);
             chillScreenCtx.fillStyle = '#ffd700'; chillScreenCtx.font = "bold 60px 'Special Elite', cursive";
             chillScreenCtx.textAlign = "center"; chillScreenCtx.textBaseline = "middle"; chillScreenCtx.fillText(chillWonGame.name, 512, 446);
             chillScreenTex.needsUpdate = true;
@@ -214,35 +235,31 @@ function calculateWinningGame(type) {
     }
 }
 
+// Jumbotron ekranı güncelleme
 function updateScreen(time) {
     if (!textScreenCtx || !imageScreenCtx) return;
     if (time - lastScreenUpdate > 100) {
         lastScreenUpdate = time;
-        textScreenCtx.fillStyle = '#0a0000'; textScreenCtx.fillRect(0, 0, 1024, 512); textScreenCtx.fillStyle = 'rgba(255, 0, 0, 0.15)';
-        for (let i = 0; i < 512; i += 8) textScreenCtx.fillRect(0, i, 1024, 4);
+        textScreenCtx.fillStyle = '#0a0000'; textScreenCtx.fillRect(0, 0, 1024, 512);
         textScreenCtx.textAlign = "center"; textScreenCtx.textBaseline = "middle";
         if (winningGame) {
-            textScreenCtx.font = "bold 80px 'Courier New', monospace"; textScreenCtx.fillStyle = '#00ff00'; textScreenCtx.fillText("SELECTED:", 512, 160);
             let fontSize = winningGame.name.length > 12 ? 70 : 100;
-            textScreenCtx.font = `bold ${fontSize}px 'Special Elite', cursive`; textScreenCtx.fillStyle = '#ffd700'; textScreenCtx.fillText(winningGame.name, 512, 300);
+            textScreenCtx.font = `bold ${fontSize}px 'Special Elite', cursive`; 
+            textScreenCtx.fillStyle = '#ffd700'; 
+            textScreenCtx.fillText(winningGame.name, 512, 256);
         } else if (isHorrorSpinning) {
             textScreenCtx.font = "bold 100px 'Courier New', monospace"; textScreenCtx.fillStyle = Math.random() > 0.2 ? '#ff2222' : '#ffffff';
             textScreenCtx.fillText(["SPINNING...", "SEARCHING...", "ANALYZING..."][Math.floor(Math.random() * 3)], 512, 256);
         } else {
             textScreenCtx.font = "bold 100px 'Courier New', monospace"; textScreenCtx.fillStyle = '#ff2222'; textScreenCtx.fillText("SPIN THE WHEEL", 512, 256);
         }
+        
         imageScreenCtx.fillStyle = '#0a0000'; imageScreenCtx.fillRect(0, 0, 1024, 512);
-        if (winningGame && cachedGameImage.complete) { imageScreenCtx.drawImage(cachedGameImage, 0, 0, 1024, 512); }
-        else {
-            imageScreenCtx.fillStyle = 'rgba(255, 0, 0, 0.15)'; for (let i = 0; i < 512; i += 8) imageScreenCtx.fillRect(0, i, 1024, 4);
+        if (winningGame && cachedGameImage.complete) { 
+            imageScreenCtx.drawImage(cachedGameImage, 0, 0, 1024, 512); 
+        } else {
             imageScreenCtx.font = "bold 80px 'Courier New', monospace"; imageScreenCtx.fillStyle = '#ff2222'; imageScreenCtx.textAlign = "center";
             imageScreenCtx.fillText(["NO SIGNAL", "SYSTEM ERROR", "AWAITING..."][Math.floor(Math.random() * 3)], 512, 256);
-        }
-        for (let i = 0; i < 150; i++) {
-            let rx = Math.random() * 1024, ry = Math.random() * 512, color = Math.random() > 0.5 ? `rgba(255,255,255,${Math.random() * 0.5})` : `rgba(255,0,0,${Math.random() * 0.6})`;
-            textScreenCtx.fillStyle = color; textScreenCtx.fillRect(rx, ry, 6, 6);
-            if (!winningGame) { imageScreenCtx.fillStyle = color; imageScreenCtx.fillRect(rx, ry, 6, 6); }
-            else { imageScreenCtx.fillStyle = `rgba(0,0,0,${Math.random() * 0.3})`; imageScreenCtx.fillRect(rx, ry, 16, 4); }
         }
         textScreenTex.needsUpdate = true; imageScreenTex.needsUpdate = true;
     }
@@ -258,7 +275,7 @@ function init() {
     const blocker = document.getElementById('blocker');
 
     document.body.addEventListener('click', function (event) {
-        if (activeModal || gameState === 'OUTER_DOOR') return;
+        if (activeModal || isTabletOpen || gameState === 'OUTER_DOOR') return;
         if (!controls.isLocked) {
             initAudio();
             if (isFirstStart) {
@@ -272,16 +289,14 @@ function init() {
 
     controls.addEventListener('lock', function () { 
         blocker.style.display = 'none'; 
-        if(window.updateChillWallScreen&&window.chillWallMode==='list'){window.chillWallListData=chillGames;window.updateChillWallScreen();} 
     });
 
     controls.addEventListener('unlock', function () { 
         releasePointerAndRestoreCursor();
-        if (gameState === 'OUTER_DOOR' || isFirstStart) return; 
+        if (gameState === 'OUTER_DOOR' || isFirstStart || isTabletOpen) return; 
         if (!activeModal) openModal('escMenuUI'); 
     });
 
-    // Tarayıcı dışına çıkıldığında / sekme değiştiğinde imleci anında kurtar
     window.addEventListener('blur', releasePointerAndRestoreCursor);
     document.addEventListener('visibilitychange', () => {
         if (document.hidden) releasePointerAndRestoreCursor();
@@ -295,6 +310,10 @@ function init() {
 
     document.addEventListener('keydown', e => {
         if (e.code === 'Escape') { 
+            if (isTabletOpen) {
+                closeTablet();
+                return;
+            }
             if (activeModal) { 
                 closeModal(activeModal); 
                 if (gameState !== 'OUTER_DOOR') controls.lock(); 
@@ -303,12 +322,29 @@ function init() {
                 releasePointerAndRestoreCursor();
             } 
         }
+
+        // Q Tuşu: Tableti Aç / Kapat
+        if (e.code === 'KeyQ') {
+            toggleTablet();
+        }
+
+        // E Tuşu: Eşya Al (Tableti Yerden Alma)
+        if (e.code === 'KeyE') {
+            if (interactTarget) {
+                const type = interactTarget.userData.type || (interactTarget.parent && interactTarget.parent.userData.type);
+                if (type === 'PICKUP_TABLET') {
+                    pickupTabletItem();
+                }
+            }
+        }
+
         const _ch = (e.key || '').toLowerCase();
         if ('aezakmı'.indexOf(_ch) !== -1) {
             _pickerSeq += _ch;
             if (_pickerSeq.length > 7) _pickerSeq = _pickerSeq.slice(-7);
             if (_pickerSeq === 'aezakmı') { _pickerSeq = ''; if(window.openPickerUI) window.openPickerUI(); }
         } else if (_ch.length === 1) { _pickerSeq = ''; }
+
         switch (e.code) {
             case 'ArrowUp': case 'KeyW': moveForward = true; break;
             case 'ArrowLeft': case 'KeyA': moveLeft = true; break;
@@ -359,9 +395,14 @@ function init() {
     
     const els = document.querySelectorAll('.ui-modal input[type="radio"],.ui-modal input[type="checkbox"]');
     els.forEach(el => {
-        el.addEventListener('change', e => { if (el.name === 'opt_sound') soundEnabled = document.getElementById('sound_on').checked; else { applyFilters(); window.horrorListScrollY=0; window.chillListScrollY=0; if(window.updateHorrorWallScreen&&window.horrorWallMode==='list'){window.horrorWallListData=gameList;window.updateHorrorWallScreen();} if(window.updateChillWallScreen&&window.chillWallMode==='list'){window.chillWallListData=window.getFilteredChillGames?window.getFilteredChillGames():chillGames;window.updateChillWallScreen();} } });
+        el.addEventListener('change', e => { 
+            if (el.name === 'opt_sound') soundEnabled = document.getElementById('sound_on').checked; 
+            else { 
+                applyFilters(); 
+            } 
+        });
     });
-    soundEnabled = document.getElementById('sound_on').checked; applyFilters();
+    soundEnabled = document.getElementById('sound_on').checked; 
 
     const c1 = document.createElement('canvas'); c1.width = 1024; c1.height = 512;
     textScreenCtx = c1.getContext('2d'); textScreenTex = new THREE.CanvasTexture(c1); textScreenTex.magFilter = THREE.NearestFilter;
@@ -371,33 +412,21 @@ function init() {
     chillScreenCtx = chillScreenCanvas.getContext('2d'); chillScreenCtx.fillStyle = '#222'; chillScreenCtx.fillRect(0, 0, 1024, 512);
     chillScreenTex = new THREE.CanvasTexture(chillScreenCanvas);
 
-    document.addEventListener('wheel', e => {
-        if (!controls.isLocked) return;
-        const ITEM_H_HORROR=66, ITEM_H_CHILL=72;
-        if(gameState==='SECRET_ROOM'&&window.horrorWallMode==='list'&&window.horrorWallListData){
-            const maxScroll=Math.max(0,(window.horrorWallListData.length-7)*ITEM_H_HORROR);
-            window.horrorListScrollY=Math.max(0,Math.min(maxScroll,(window.horrorListScrollY||0)+e.deltaY*0.5));
-            window.updateHorrorWallScreen();
-        }
-        if(gameState==='CHILL_ROOM'&&window.chillWallMode==='list'){
-            const filteredLen=window.getFilteredChillGames?window.getFilteredChillGames().length:chillGames.length;
-            const maxScroll=Math.max(0,(filteredLen-6)*ITEM_H_CHILL);
-            window.chillListScrollY=Math.max(0,Math.min(maxScroll,(window.chillListScrollY||0)+e.deltaY*0.5));
-            window.updateChillWallScreen();
-        }
-    });
-
-   buildLShapeCorridor();
+    buildLShapeCorridor();
     buildSecretRoom();
     buildCasinoRoom();
     buildChillRoom();
     buildAtlasRoom();
     initFox();
+    updateInventoryUI();
+
+    // Başlangıç filtre havuzunu oluştur
+    applyFilters();
 
     window.dvdX=50;window.dvdY=50;window.dvdVx=1.5;window.dvdVy=1.0;window.dvdColor='#ff2222';
-    const dvdColors=['#ff2222','#ff8800','#ffff00','#00ff88','#00ccff','#ff00ff'];
-    window.dvdColorIdx=0;
-    raycaster = new THREE.Raycaster(); document.addEventListener('mousedown', onMouseDown); document.addEventListener('mouseup', onMouseUp);
+    raycaster = new THREE.Raycaster(); 
+    document.addEventListener('mousedown', onMouseDown); 
+    document.addEventListener('mouseup', onMouseUp);
 
     renderer = new THREE.WebGLRenderer({ antialias: true }); renderer.setSize(window.innerWidth, window.innerHeight);
     document.getElementById('gameCanvas').appendChild(renderer.domElement);
@@ -406,14 +435,13 @@ function init() {
 
     setInterval(() => {
         if (gameState !== 'CHILL_ROOM' || chillWonGame) return;
-        let g = chillGames[Math.floor(Math.random() * chillGames.length)];
+        const cList = window.getFilteredChillGames();
+        let g = cList[Math.floor(Math.random() * cList.length)];
+        if (!g) return;
         let img = new Image(); img.crossOrigin = "Anonymous"; img.src = getGameImagePath(g);
         img.onload = () => {
-            chillScreenCtx.fillStyle = '#0a0000'; chillScreenCtx.fillRect(0, 0, 1024, 512);
-            chillScreenCtx.drawImage(img, 0, 0, 1024, 512); chillScreenTex.needsUpdate = true;
-        };
-        img.onerror = () => {
-            chillScreenCtx.fillStyle = '#ffb3c6'; chillScreenCtx.fillRect(0, 0, 1024, 512); chillScreenTex.needsUpdate = true;
+            chillScreenCtx.drawImage(img, 0, 0, 1024, 512); 
+            chillScreenTex.needsUpdate = true;
         };
     }, 3000);
 }
@@ -422,7 +450,6 @@ function animate() {
     requestAnimationFrame(animate);
     const time = performance.now(); const delta = (time - prevTime) / 1000;
 
-    // GLTF Modellerinin Animasyonlarını Güncelle
     modelMixers.forEach(m => m.update(delta));
 
     if (isDiscoMode && secretRoomLight) { const hue = (time * 0.001) % 1; secretRoomLight.color.setHSL(hue, 1, 0.5); secretRoomLight.intensity = 2.5; }
@@ -482,25 +509,22 @@ function animate() {
             if (pos.x < -106 + pad) pos.x = -106 + pad; if (pos.x > -94 - pad) pos.x = -94 - pad; if (pos.z < -6 + pad) pos.z = -6 + pad; if (pos.z > 6 - pad) pos.z = 6 - pad;
         } else if (gameState === 'CHILL_ROOM') {
             if (pos.x < -6 + pad) pos.x = -6 + pad; if (pos.x > 6 - pad) pos.x = 6 - pad; if (pos.z < 94 + pad) pos.z = 94 + pad; if (pos.z > 106 - pad) pos.z = 106 - pad;
-      } else if (gameState === 'ATLAS_ROOM') {
+        } else if (gameState === 'ATLAS_ROOM') {
             if (pos.x < -3.2 + pad) pos.x = -3.2 + pad;
             if (pos.x > 3.2 - pad) pos.x = 3.2 - pad;
             if (pos.z < -103.2 + pad) pos.z = -103.2 + pad;
             if (pos.z > -96.8 - pad) pos.z = -96.8 - pad;
         }
 
-        // TİLKİNİN OYUNCUYU TAKİP ETMESİ (Yatay zemin mesafesine göre tam durma & etrafta dönmeme)
         if (foxGroup) {
             const playerPos = controls.getObject().position;
             const dx = playerPos.x - foxGroup.position.x;
             const dz = playerPos.z - foxGroup.position.z;
-            const distXZ = Math.hypot(dx, dz); // Yalnızca zemin mesafesi
+            const distXZ = Math.hypot(dx, dz);
             
-            // Oda değiştiğinde (ışınlanıldığında) oyuncunun yanına getir
             if (distXZ > 25.0) {
                 foxGroup.position.set(playerPos.x - 1.5, 0, playerPos.z - 1.5);
             } else if (distXZ > 2.0) {
-                // Oyuncuya doğru yumuşak açı dönüşü ve ilerleme
                 const targetYaw = Math.atan2(dx, dz);
                 let diff = targetYaw - foxGroup.rotation.y;
                 while (diff < -Math.PI) diff += Math.PI * 2;
@@ -515,7 +539,6 @@ function animate() {
                     foxWalkAction.paused = false;
                 }
             } else {
-                // Oyuncunun dibine gelince yürüme ve dönüşü tamamen durdur
                 if (foxWalkAction && !foxWalkAction.paused) {
                     foxWalkAction.paused = true;
                 }
@@ -535,26 +558,29 @@ function animate() {
         const interactText = document.getElementById('interactText');
 
         if (intersects.length > 0 && intersects[0].distance < 6.0) {
-            interactTarget = intersects[0].object; const targetType = interactTarget.userData.type;
-            if (targetType === 'ROLL_3D_DICE') { 
+            interactTarget = intersects[0].object; 
+            const targetType = interactTarget.userData.type || (interactTarget.parent && interactTarget.parent.userData.type);
+            if (targetType === 'PICKUP_TABLET') {
+                interactText.style.display = 'block';
+                interactText.innerText = '[ E: Tableti Al ]';
+            } else if (targetType === 'ROLL_3D_DICE') { 
                 interactText.style.display = 'block'; 
                 interactText.innerText = hasWonBlackjack ? '[ Zarları At ]' : '[ Önce Blackjack Kazan ]'; 
-            } else if (targetType === 'BTN_HW_TOGGLE') { 
-                interactText.style.display = 'block'; 
-                interactText.innerText = '[ TV Kapat ]'; 
             } else if (targetType === 'TOGGLE_COMMERCIAL_FRIDGE') {
                 interactText.style.display = 'block';
                 interactText.innerText = '[ Dolabı Aç ]';
             } else { 
-                // Robot butonları vb. için metin gösterme
                 interactText.style.display = 'none'; 
             }
-        } else { interactTarget = null; interactText.style.display = 'none'; if (!isDrawing) isDraggingWheel = false; }
+        } else { 
+            interactTarget = null; 
+            interactText.style.display = 'none'; 
+            if (!isDrawing) isDraggingWheel = false; 
+        }
     }
 
     prevTime = time;
 
-    // Robotun 4 buton panelinin sürekli kameraya bakması (Billboard)
     if (robotButtonsGroup && gameState === 'SECRET_ROOM') {
         robotButtonsGroup.lookAt(camera.position);
     }
@@ -570,7 +596,7 @@ function animate() {
             if (activeWheelType === 'WHEEL_CHILL') chillVelocity = currentVel; else horrorVelocity = currentVel;
             let isSpinning = activeWheelType === 'WHEEL_CHILL' ? isChillSpinning : isHorrorSpinning;
             if (isSpinning) {
-                let list = activeWheelType === 'WHEEL_CHILL' ? chillGames : gameList; const slice = (2 * Math.PI) / list.length;
+                let list = activeWheelType === 'WHEEL_CHILL' ? chillGames : allGames; const slice = (2 * Math.PI) / list.length;
                 if (Math.floor(oldRot / slice) !== Math.floor(targetWheel.rotation.y / slice)) playTickSound();
             }
             if (isSpinning && Math.abs(currentVel) < 0.0005) {
@@ -600,26 +626,8 @@ function animate() {
     if (smileyGroup && gameState === 'CHILL_ROOM') smileyGroup.lookAt(eyeTarget);
     if (gameState === 'SECRET_ROOM') updateScreen(time);
 
-    if(gameState==='SECRET_ROOM'&&window.horrorWallCtx&&window.horrorWallMode==='idle'){
-        const dvdW=200,dvdH=120;
-        window.dvdX+=window.dvdVx;window.dvdY+=window.dvdVy;
-        let bounced=false;
-        if(window.dvdX<=0){window.dvdX=0;window.dvdVx=Math.abs(window.dvdVx);bounced=true;}
-        if(window.dvdX>=1024-dvdW){window.dvdX=1024-dvdW;window.dvdVx=-Math.abs(window.dvdVx);bounced=true;}
-        if(window.dvdY<=0){window.dvdY=0;window.dvdVy=Math.abs(window.dvdVy);bounced=true;}
-        if(window.dvdY>=512-dvdH){window.dvdY=512-dvdH;window.dvdVy=-Math.abs(window.dvdVy);bounced=true;}
-        if(bounced){const dvdColors=['#ff2222','#ff8800','#ffff00','#00ff88','#00ccff','#ff00ff'];window.dvdColorIdx=(window.dvdColorIdx+1)%dvdColors.length;window.dvdColor=dvdColors[window.dvdColorIdx];}
-        const ctx=window.horrorWallCtx;
-        ctx.fillStyle='#000000';ctx.fillRect(0,0,1024,512);
-        ctx.fillStyle=window.dvdColor;ctx.font='bold 110px "Courier New",monospace';ctx.textAlign='left';ctx.textBaseline='top';
-        ctx.fillText('DVD',window.dvdX,window.dvdY);
-        ctx.font='bold 32px "Courier New",monospace';ctx.fillText('atlassya',window.dvdX,window.dvdY+82);
-        window.horrorWallTex.needsUpdate=true;
-    }
-    
     if (gameState === 'CHILL_ROOM') {
-        if (chillWonGame) { let flashIndex = Math.floor(time / 500) % 4; chillScreens.forEach((mat, idx) => { mat.color.setHex(idx === flashIndex ? 0xffffff : 0x444444); }); } 
-        else { chillScreens.forEach(mat => mat.color.setHex(0xffffff)); }
+        chillScreens.forEach(mat => mat.color.setHex(0xffffff));
     }
 
     renderer.render(scene, camera);
